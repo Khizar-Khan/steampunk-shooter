@@ -1,94 +1,56 @@
-using Godot;
 using SteampunkShooter.components;
 
 namespace SteampunkShooter.systems.state_machine.states.movement;
 
-public partial class MovementWalkState : State
+public partial class MovementWalkState : MovementState
 {
-    private MovementComponent _movementComponent;
-
-    public override void Initialise(StateMachine stateMachine)
-    {
-        base.Initialise(stateMachine);
-        _movementComponent = (MovementComponent)StateMachine.Component;
-    }
-
     public override void Enter()
     {
-        GD.Print("Entered: " + Name);
-        ConnectSignals();
+        base.Enter();
+        MovementComponent.SetSpeed(MovementComponent.SpeedType.Walk);
     }
 
-    public override void PhysicsUpdate(double delta)
+    public override void PhysicsProcess(double delta)
     {
-        _movementComponent.ApplyGravity(delta);
-        _movementComponent.ApplyMovement(_movementComponent.CalculateMovementDirection());
-        _movementComponent.MoveAndSlide();
+        MovementComponent.Crouch((float)delta, true);
+
+        if (!MovementComponent.IsOnFloor())
+            MovementComponent.ApplyGravity(delta);
+
+        MovementComponent.ApplyMovement(MovementComponent.GetMovementDirectionFromInput(), delta);
+        MovementComponent.MoveAndSlide();
     }
 
-    public override void Exit()
+    protected override void HandleTransitions()
     {
-        GD.Print("Exited: " + Name);
-        DisconnectSignals();
-    }
-
-    // Utility
-    private void ConnectSignals()
-    {
-        _movementComponent.Connect(
-            MovementComponent.SignalName.MovementRequested,
-            new Callable(this, nameof(OnMovementRequested))
-        );
-
-        _movementComponent.Connect(
-            MovementComponent.SignalName.SprintRequested,
-            new Callable(this, nameof(OnSprintRequested))
-        );
-
-        _movementComponent.Connect(
-            MovementComponent.SignalName.JumpRequested,
-            new Callable(this, nameof(OnJumpRequested))
-        );
-    }
-
-    private void DisconnectSignals()
-    {
-        _movementComponent.Disconnect(
-            MovementComponent.SignalName.MovementRequested,
-            new Callable(this, nameof(OnMovementRequested))
-        );
-
-        _movementComponent.Disconnect(
-            MovementComponent.SignalName.SprintRequested,
-            new Callable(this, nameof(OnSprintRequested))
-        );
-
-        _movementComponent.Disconnect(
-            MovementComponent.SignalName.JumpRequested,
-            new Callable(this, nameof(OnJumpRequested))
-        );
-    }
-
-    // Signal Event Handlers
-    private void OnMovementRequested(bool isRequested)
-    {
-        if (!isRequested)
-            StateMachine.TransitionTo("IdleState");
-    }
-
-    private void OnJumpRequested()
-    {
-        if (_movementComponent.IsOnFloor())
+        if (MovementComponent.CanCrouch())
         {
-            StateMachine.TransitionTo("JumpState");
+            TransitionToState(MovementStateType.CrouchState);
+            return;
         }
-    }
 
-    private void OnSprintRequested(bool isRequested)
-    {
-        if (_movementComponent.IsOnFloor() && isRequested)
+        if (MovementComponent.IsFalling())
         {
-            StateMachine.TransitionTo("SprintState");
+            TransitionToState(MovementStateType.FallingState);
+            return;
+        }
+
+        if (MovementComponent.CanJump())
+        {
+            TransitionToState(MovementStateType.JumpState);
+            return;
+        }
+
+        if (MovementComponent.IsIdle())
+        {
+            TransitionToState(MovementStateType.IdleState);
+            return;
+        }
+
+        if (MovementComponent.CanSprint())
+        {
+            TransitionToState(MovementStateType.SprintState);
+            return;
         }
     }
 }

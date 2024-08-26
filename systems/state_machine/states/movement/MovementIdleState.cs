@@ -1,76 +1,43 @@
 using Godot;
-using SteampunkShooter.components;
 
 namespace SteampunkShooter.systems.state_machine.states.movement;
 
-public partial class MovementIdleState : State
+public partial class MovementIdleState : MovementState
 {
-    private MovementComponent _movementComponent;
-
-    public override void Initialise(StateMachine stateMachine)
+    public override void PhysicsProcess(double delta)
     {
-        base.Initialise(stateMachine);
-        _movementComponent = (MovementComponent)StateMachine.Component;
+        MovementComponent.Crouch((float)delta, true);
+        
+        if (!MovementComponent.IsOnFloor())
+            MovementComponent.ApplyGravity(delta);
+
+        MovementComponent.RemoveMovement(delta);
+        MovementComponent.MoveAndSlide();
     }
 
-    public override void Enter()
+    protected override void HandleTransitions()
     {
-        GD.Print("Entered: " + Name);
-        ConnectSignals();
-    }
-
-    public override void PhysicsUpdate(double delta)
-    {
-        _movementComponent.ApplyGravity(delta);
-        _movementComponent.RemoveMovement();
-        _movementComponent.MoveAndSlide();
-    }
-
-    public override void Exit()
-    {
-        GD.Print("Exited: " + Name);
-        DisconnectSignals();
-    }
-
-    // Utility
-    private void ConnectSignals()
-    {
-        _movementComponent.Connect(
-            MovementComponent.SignalName.MovementRequested,
-            new Callable(this, nameof(OnMovementRequested))
-        );
-
-        _movementComponent.Connect(
-            MovementComponent.SignalName.JumpRequested,
-            new Callable(this, nameof(OnJumpRequested))
-        );
-    }
-
-    private void DisconnectSignals()
-    {
-        _movementComponent.Disconnect(
-            MovementComponent.SignalName.MovementRequested,
-            new Callable(this, nameof(OnMovementRequested))
-        );
-
-        _movementComponent.Disconnect(
-            MovementComponent.SignalName.JumpRequested,
-            new Callable(this, nameof(OnJumpRequested))
-        );
-    }
-
-    // Signal Event Handlers
-    private void OnMovementRequested(bool isRequested)
-    {
-        if (isRequested)
-            StateMachine.TransitionTo("WalkState");
-    }
-
-    private void OnJumpRequested()
-    {
-        if (_movementComponent.IsOnFloor())
+        if (MovementComponent.CanCrouch())
         {
-            StateMachine.TransitionTo("JumpState");
+            TransitionToState(MovementStateType.CrouchState);
+            return;
         }
+        
+        if (MovementComponent.IsFalling())
+        {
+            TransitionToState(MovementStateType.FallingState);
+            return;
+        }
+
+        if (MovementComponent.CanJump())
+        {
+            TransitionToState(MovementStateType.JumpState);
+            return;
+        }
+
+        if (MovementComponent.IsIdle())
+            return;
+
+        TransitionToState(MovementComponent.CanSprint() ? MovementStateType.SprintState : MovementStateType.WalkState);
     }
 }

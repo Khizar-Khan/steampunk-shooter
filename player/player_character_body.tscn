@@ -1,17 +1,22 @@
-[gd_scene load_steps=10 format=3 uid="uid://f3mefhy61028"]
+[gd_scene load_steps=13 format=3 uid="uid://f3mefhy61028"]
 
 [ext_resource type="Script" path="res://player/PlayerCharacterBody.cs" id="1_451hh"]
 [ext_resource type="Script" path="res://components/InputComponent.cs" id="2_6rkla"]
-[ext_resource type="Script" path="res://components/MovementComponent.cs" id="3_o8hdo"]
+[ext_resource type="Script" path="res://components/MovementComponent.cs" id="3_154dl"]
 [ext_resource type="Script" path="res://systems/state_machine/StateMachine.cs" id="4_sreyy"]
 [ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementIdleState.cs" id="5_cxko7"]
 [ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementWalkState.cs" id="6_brquy"]
 [ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementJumpState.cs" id="7_2uaqp"]
 [ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementSprintState.cs" id="8_f11v8"]
+[ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementFallingState.cs" id="9_i61bm"]
+[ext_resource type="Script" path="res://systems/state_machine/states/movement/MovementCrouchState.cs" id="10_ptqmv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
 radius = 0.25
 height = 1.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vs4au"]
+radius = 0.25
 
 [node name="PlayerCharacterBody" type="CharacterBody3D"]
 script = ExtResource("1_451hh")
@@ -19,9 +24,11 @@ script = ExtResource("1_451hh")
 [node name="CameraContainer" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
 
-[node name="Camera" type="Camera3D" parent="CameraContainer"]
+[node name="CameraController" type="Node3D" parent="CameraContainer"]
 
-[node name="WeaponAttachmentPoint" type="Node3D" parent="CameraContainer/Camera"]
+[node name="Camera" type="Camera3D" parent="CameraContainer/CameraController"]
+
+[node name="WeaponAttachmentPoint" type="Node3D" parent="CameraContainer/CameraController/Camera"]
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -31,7 +38,7 @@ shape = SubResource("CapsuleShape3D_qyhda")
 script = ExtResource("2_6rkla")
 
 [node name="MovementComponent" type="Node" parent="."]
-script = ExtResource("3_o8hdo")
+script = ExtResource("3_154dl")
 
 [node name="StateMachine" type="Node" parent="MovementComponent"]
 script = ExtResource("4_sreyy")
@@ -48,3 +55,15 @@ script = ExtResource("7_2uaqp")
 
 [node name="SprintState" type="Node" parent="MovementComponent/StateMachine"]
 script = ExtResource("8_f11v8")
+
+[node name="FallingState" type="Node" parent="MovementComponent/StateMachine"]
+script = ExtResource("9_i61bm")
+
+[node name="CrouchState" type="Node" parent="MovementComponent/StateMachine"]
+script = ExtResource("10_ptqmv")
+
+[node name="OverheadShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("SphereShape3D_vs4au")
+target_position = Vector3(0, 0.75, 0)
+collide_with_areas = true

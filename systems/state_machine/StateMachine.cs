@@ -17,10 +17,10 @@ public partial class StateMachine : Node
 
     public override async void _Ready()
     {
-        Component = GetParent() as Component;
-        if(Component == null)
+        Component = GetParent<Component>();
+        if (Component == null)
             throw new NullReferenceException("State machine's component is null.");
-        
+
         await ToSignal(Component, "ready");
 
         InitialiseStates();
@@ -51,17 +51,12 @@ public partial class StateMachine : Node
 
     public override void _Process(double delta)
     {
-        _currentState.Update(delta);
+        _currentState.Process(delta);
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        _currentState.PhysicsUpdate(delta);
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        _currentState.HandleInput(@event);
+        _currentState.PhysicsProcess(delta);
     }
 
     public void TransitionTo(string key)

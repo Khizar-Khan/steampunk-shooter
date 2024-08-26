@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace SteampunkShooter.systems.state_machine.states;
@@ -8,13 +9,28 @@ public abstract partial class State : Node
 
     public virtual void Initialise(StateMachine stateMachine)
     {
-        StateMachine = stateMachine;
+        StateMachine = stateMachine ?? throw new ArgumentNullException(nameof(stateMachine));
     }
-    
-    public virtual void Enter() {}
-    public virtual void Exit() {}
-    
-    public virtual void Update(double delta) {}
-    public virtual void PhysicsUpdate(double delta) {}
-    public virtual void HandleInput(InputEvent @event) {}
+
+    public virtual void Enter()
+    {
+        // No Default Implementation
+    }
+
+    public virtual void Exit()
+    {
+        // No Default Implementation
+    }
+
+    public virtual void Process(double delta)
+    {
+        HandleTransitions();
+    }
+
+    public virtual void PhysicsProcess(double delta)
+    {
+        // No Default Implementation
+    }
+
+    protected abstract void HandleTransitions();
 }
