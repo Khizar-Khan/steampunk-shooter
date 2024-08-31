@@ -27,6 +27,7 @@ public partial class MovementComponent : Component
     [ExportCategory("Crouch Settings")]
     [Export] private float _crouchHeight = 0.975f; // Player height when crouching.
     [Export] private float _crouchTransitionSpeed = 7.5f; // Speed of the transitions between standing and crouching.
+    [Export] private float _crouchTransitionThreshold = 0.005f; // How close to the target value to snap to it immediately.
     
     [ExportCategory("Jump Settings")]
     [Export] private float _jumpHeight = 1.0f; // How high the player can jump.
@@ -152,7 +153,7 @@ public partial class MovementComponent : Component
     public void Crouch(float delta, bool isStanding = false)
     {
         float targetHeight = isStanding ? GetStandHeight() : _crouchHeight;
-        EmitSignal(nameof(AdjustHeightRequested), targetHeight, _crouchTransitionSpeed, delta);
+        EmitSignal(nameof(AdjustHeightRequested), targetHeight, _crouchTransitionSpeed, _crouchTransitionThreshold, delta);
     }
 
     public void MoveAndSlide()

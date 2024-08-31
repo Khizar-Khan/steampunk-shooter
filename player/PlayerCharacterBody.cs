@@ -15,7 +15,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
 
     [Signal]
     public delegate void ObstructionAboveEventHandler(bool isObstructionAbove);
-    
+
     // References
     private ShapeCast3D _overheadShapeCast;
     private CollisionShape3D _collisionShape;
@@ -36,7 +36,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
         InitializeComponents();
         CacheValues();
         ConnectSignals();
-        
+
         _overheadShapeCast.AddException(this);
     }
 
@@ -113,27 +113,48 @@ public partial class PlayerCharacterBody : CharacterBody3D
         EmitSignal(SignalName.ObstructionAbove, _isObstructionAbove);
     }
 
-    public void AdjustHeight(float targetHeight, float lerpSpeed, float delta)
+    public void AdjustHeight(float targetHeight, float lerpSpeed, float threshold, float delta)
     {
+        // TODO: Capsule size gets bigger when crouching and directly falling. Check via: GD.Print((_collisionShape.Shape as CapsuleShape3D).Height);
         if (_collisionShape.Shape is CapsuleShape3D capsuleShape)
         {
             float currentHeight = capsuleShape.Height;
+
             if (targetHeight > currentHeight && _isObstructionAbove)
                 return;
 
-            AdjustCapsuleHeight(capsuleShape, currentHeight, targetHeight, lerpSpeed, delta);
-            AdjustCollisionShapePosition(targetHeight, lerpSpeed, delta);
-            AdjustCameraContainerPosition(targetHeight, lerpSpeed, delta);
+            bool heightAdjusted = AdjustCapsuleHeight(capsuleShape, currentHeight, targetHeight, lerpSpeed, delta, threshold);
+            bool collisionPositionAdjusted = AdjustCollisionShapePosition(targetHeight, lerpSpeed, delta, threshold);
+            bool cameraPositionAdjusted = AdjustCameraContainerPosition(targetHeight, lerpSpeed, delta, threshold);
+
+            // If all adjustments have reached the target (within the threshold), snap to the exact target values
+            if (heightAdjusted && collisionPositionAdjusted && cameraPositionAdjusted)
+            {
+                capsuleShape.Height = targetHeight;
+                _collisionShape.Position = new Vector3(
+                    _collisionShape.Position.X,
+                    targetHeight * 0.5f,
+                    _collisionShape.Position.Z
+                );
+                _cameraContainer.Position = new Vector3(
+                    _cameraContainer.Position.X,
+                    targetHeight - _cameraContainerPositionOffset,
+                    _cameraContainer.Position.Z
+                );
+            }
         }
     }
 
-    private void AdjustCapsuleHeight(CapsuleShape3D capsuleShape, float currentHeight, float targetHeight, float lerpSpeed, float delta)
+    private bool AdjustCapsuleHeight(CapsuleShape3D capsuleShape, float currentHeight, float targetHeight, float lerpSpeed, float delta, float threshold)
     {
         float newHeight = Mathf.Lerp(currentHeight, targetHeight, lerpSpeed * delta);
         capsuleShape.Height = newHeight;
+
+        // Check if the height is within the threshold
+        return Mathf.Abs(newHeight - targetHeight) < threshold;
     }
 
-    private void AdjustCollisionShapePosition(float targetHeight, float lerpSpeed, float delta)
+    private bool AdjustCollisionShapePosition(float targetHeight, float lerpSpeed, float delta, float threshold)
     {
         float currentCollisionY = _collisionShape.Position.Y;
         float targetCollisionY = targetHeight * 0.5f;
@@ -143,9 +164,12 @@ public partial class PlayerCharacterBody : CharacterBody3D
             newCollisionY,
             _collisionShape.Position.Z
         );
+
+        // Check if the collision shape position is within the threshold
+        return Mathf.Abs(newCollisionY - targetCollisionY) < threshold;
     }
 
-    private void AdjustCameraContainerPosition(float targetHeight, float lerpSpeed, float delta)
+    private bool AdjustCameraContainerPosition(float targetHeight, float lerpSpeed, float delta, float threshold)
     {
         float currentCameraY = _cameraContainer.Position.Y;
         float targetCameraY = targetHeight - _cameraContainerPositionOffset;
@@ -155,5 +179,8 @@ public partial class PlayerCharacterBody : CharacterBody3D
             newCameraY,
             _cameraContainer.Position.Z
         );
+
+        // Check if the camera position is within the threshold
+        return Mathf.Abs(newCameraY - targetCameraY) < threshold;
     }
 }
