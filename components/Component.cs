@@ -1,15 +1,16 @@
 using System;
 using Godot;
+using Godot.Collections;
+using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.components;
 
 public abstract partial class Component : Node
 {
-    [Signal]
-    public delegate void EnabledStateChangedEventHandler(bool isEnabled);
-
     private bool _isEnabled = true;
+    private Array<ComponentExtension> _extensions;
 
+    [Export]
     public bool IsEnabled
     {
         get => _isEnabled;
@@ -19,46 +20,75 @@ public abstract partial class Component : Node
                 return;
 
             _isEnabled = value;
-            EmitSignal(SignalName.EnabledStateChanged, _isEnabled);
-
+            
             if (_isEnabled)
+            {
                 OnEnabled();
+            }
             else
+            {
                 OnDisabled();
+            }
         }
     }
 
-    public override void _Ready()
+    public override async void _Ready()
     {
+        if (Owner == null)
+            throw new NullReferenceException("Component needs a valid owner");
+
+        await ToSignal(Owner, "ready");
+
         Initialise();
+        InitialiseExtensions();
     }
 
     // Process method that only runs if the component is enabled
     public override void _Process(double delta)
     {
-        RunIfEnabled(ProcessComponent, delta);
+        if (!_isEnabled)
+            return;
+
+        Process(delta);
+        foreach (ComponentExtension extension in _extensions)
+        {
+            if (extension.IsEnabled)
+            {
+                extension.Process(delta);
+            }
+        }
     }
 
     // Physics Process method that only runs if the component is enabled
     public override void _PhysicsProcess(double delta)
     {
-        RunIfEnabled(PhysicsProcessComponent, delta);
+        if (!_isEnabled)
+            return;
+
+        PhysicsProcess(delta);
+        foreach (ComponentExtension extension in _extensions)
+        {
+            if (extension.IsEnabled)
+            {
+                extension.PhysicsProcess(delta);
+            }
+        }
     }
 
     // Virtual method for initialisation logic, can be overridden by derived components
     protected virtual void Initialise()
     {
-        // Default initialisation logic
+        _extensions = new Array<ComponentExtension>();
     }
 
     // Virtual method for per-frame processing, can be overridden by derived components
-    protected virtual void ProcessComponent(double delta)
+    protected virtual void Process(double delta)
     {
         // Default per-frame processing logic
     }
 
     // Virtual method for per-physics process processing, can be overridden by derived components
-    protected virtual void PhysicsProcessComponent(double delta)
+    protected virtual void PhysicsProcess(double delta)
     {
         // Default per-physics process logic
     }
@@ -75,11 +105,18 @@ public abstract partial class Component : Node
         // Logic to execute when the component is disabled
     }
 
-    private void RunIfEnabled(Action<double> processMethod, double delta)
+    private void InitialiseExtensions()
     {
-        if (_isEnabled)
+        _extensions ??= new Array<ComponentExtension>();
+
+        foreach (Node node in GetChildren())
         {
-            processMethod(delta);
+            if (node is ComponentExtension componentExtension)
+            {
+                componentExtension.SetParent(this);
+                componentExtension.Initialise();
+                _extensions.Add(componentExtension);
+            }
         }
     }
 }

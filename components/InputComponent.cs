@@ -27,7 +27,7 @@ public partial class InputComponent : Component
     [Signal]
     public delegate void MouseMovedEventHandler(Vector2 mouseDelta);
 
-    protected override void ProcessComponent(double delta)
+    protected override void Process(double delta)
     {
         Vector2 inputDirection = Input.GetVector(MovementLeft, MovementRight, MovementForward, MovementBackward);
         EmitSignal(SignalName.MovementInput, inputDirection);

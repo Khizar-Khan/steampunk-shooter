@@ -1,6 +1,6 @@
 using System;
-using Godot;
 using SteampunkShooter.components;
+using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.systems.state_machine.states.movement;
 
@@ -18,10 +18,10 @@ public abstract partial class MovementState : State
 
     protected MovementComponent MovementComponent { get; private set; }
 
-    public override void Initialise(StateMachine stateMachine)
+    public override void Initialise(StateMachineExtension stateMachineExtension)
     {
-        base.Initialise(stateMachine);
-        MovementComponent = StateMachine.Component as MovementComponent;
+        base.Initialise(stateMachineExtension);
+        MovementComponent = StateMachineExtension.ParentComponent as MovementComponent;
 
         if (MovementComponent == null)
             throw new NullReferenceException("StateMachine's component is not a MovementComponent.");
@@ -29,6 +29,6 @@ public abstract partial class MovementState : State
 
     protected void TransitionToState(MovementStateType state)
     {
-        StateMachine.TransitionTo(state.ToString());
+        StateMachineExtension.TransitionTo(state.ToString());
     }
 }

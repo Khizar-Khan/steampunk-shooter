@@ -1,27 +1,22 @@
 using System;
 using Godot;
 using Godot.Collections;
-using SteampunkShooter.components;
 using SteampunkShooter.systems.state_machine.states;
 
-namespace SteampunkShooter.systems.state_machine;
+namespace SteampunkShooter.components.extensions;
 
-public partial class StateMachine : Node
+public partial class StateMachineExtension : ComponentExtension
 {
     [Export] private NodePath _initialStatePath;
 
     // Internal Attributes
     private Dictionary<string, State> _states;
     private State _currentState;
-    public Component Component { get; private set; }
 
-    public override async void _Ready()
+    public override void Initialise()
     {
-        Component = GetParent<Component>();
-        if (Component == null)
-            throw new NullReferenceException("State machine's component is null.");
-
-        await ToSignal(Component, "ready");
+        base.Initialise();
+        _states = new Dictionary<string, State>();
 
         InitialiseStates();
         SetInitialState();
@@ -29,7 +24,6 @@ public partial class StateMachine : Node
 
     private void InitialiseStates()
     {
-        _states = new Dictionary<string, State>();
         foreach (Node child in GetChildren())
         {
             if (child is not State state)
@@ -49,12 +43,12 @@ public partial class StateMachine : Node
         _currentState.Enter();
     }
 
-    public override void _Process(double delta)
+    public override void Process(double delta)
     {
         _currentState.Process(delta);
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void PhysicsProcess(double delta)
     {
         _currentState.PhysicsProcess(delta);
     }

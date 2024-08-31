@@ -12,6 +12,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private const string CameraContainerPath = "CameraContainer";
     private const string InputComponentPath = "InputComponent";
     private const string MovementComponentPath = "MovementComponent";
+    private const string CameraComponentPath = "CameraComponent";
 
     [Signal]
     public delegate void ObstructionAboveEventHandler(bool isObstructionAbove);
@@ -24,16 +25,18 @@ public partial class PlayerCharacterBody : CharacterBody3D
     // Components
     private InputComponent _inputComponent;
     private MovementComponent _movementComponent;
+    private CameraComponent _cameraComponent;
 
-    // Caching Values
+    // Cached Values
+    private Transform3D _originalCameraContainerTransform;
     private float _cameraContainerPositionOffset;
+    private float _collisionShapeStandHeight;
     private bool _isObstructionAbove;
-    public float CollisionShapeStandHeight { get; private set; }
 
     public override void _Ready()
     {
-        InitializeReferences();
-        InitializeComponents();
+        InitialiseReferences();
+        InitialiseComponents();
         CacheValues();
         ConnectSignals();
 
@@ -45,30 +48,33 @@ public partial class PlayerCharacterBody : CharacterBody3D
         CheckAndEmitObstructionSignal();
     }
 
-    private void InitializeReferences()
+    private void InitialiseReferences()
     {
         _overheadShapeCast = GetNode<ShapeCast3D>(OverheadShapeCastPath) ?? throw new NullReferenceException("OverheadShapeCast not found.");
         _collisionShape = GetNode<CollisionShape3D>(CollisionShapePath) ?? throw new NullReferenceException("CollisionShape not found.");
         _cameraContainer = GetNode<Node3D>(CameraContainerPath) ?? throw new NullReferenceException("CameraContainer not found.");
     }
 
-    private void InitializeComponents()
+    private void InitialiseComponents()
     {
         _inputComponent = GetNode<InputComponent>(InputComponentPath) ?? throw new NullReferenceException("InputComponent not found.");
         _movementComponent = GetNode<MovementComponent>(MovementComponentPath) ?? throw new NullReferenceException("MovementComponent not found.");
+        _cameraComponent = GetNode<CameraComponent>(CameraComponentPath) ?? throw new NullReferenceException("CameraComponent not found.");
     }
 
     private void CacheValues()
     {
         if (_collisionShape.Shape is CapsuleShape3D capsuleShape)
         {
-            CollisionShapeStandHeight = capsuleShape.Height;
-            _cameraContainerPositionOffset = CollisionShapeStandHeight - _cameraContainer.Position.Y;
+            _collisionShapeStandHeight = capsuleShape.Height;
+            _cameraContainerPositionOffset = _collisionShapeStandHeight - _cameraContainer.Position.Y;
         }
         else
         {
             throw new InvalidCastException("CollisionShape is not a CapsuleShape3D.");
         }
+        
+        _originalCameraContainerTransform = _cameraContainer.Transform;
     }
 
     private void ConnectSignals()
@@ -101,6 +107,16 @@ public partial class PlayerCharacterBody : CharacterBody3D
         Connect(
             nameof(ObstructionAbove),
             new Callable(_movementComponent, nameof(MovementComponent.OnObstructionAbove))
+        );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.MouseMoved,
+            new Callable(_cameraComponent, nameof(CameraComponent.OnMouseMotion))
+        );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.MovementInput,
+            new Callable(_cameraComponent, nameof(CameraComponent.OnMovementInput))
         );
     }
 
@@ -182,5 +198,15 @@ public partial class PlayerCharacterBody : CharacterBody3D
 
         // Check if the camera position is within the threshold
         return Mathf.Abs(newCameraY - targetCameraY) < threshold;
+    }
+
+    public Transform3D GetOriginalCameraTransform()
+    {
+        return _originalCameraContainerTransform;
+    }
+    
+    public float GetCollisionShapeStandHeight()
+    {
+        return _collisionShapeStandHeight;
     }
 }

@@ -1,15 +1,16 @@
 using System;
 using Godot;
+using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.systems.state_machine.states;
 
 public abstract partial class State : Node
 {
-    protected StateMachine StateMachine { get; private set; }
+    protected StateMachineExtension StateMachineExtension { get; private set; }
 
-    public virtual void Initialise(StateMachine stateMachine)
+    public virtual void Initialise(StateMachineExtension stateMachineExtension)
     {
-        StateMachine = stateMachine ?? throw new ArgumentNullException(nameof(stateMachine));
+        StateMachineExtension = stateMachineExtension ?? throw new ArgumentNullException(nameof(stateMachineExtension));
     }
 
     public virtual void Enter()

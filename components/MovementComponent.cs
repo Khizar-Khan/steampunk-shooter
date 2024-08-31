@@ -1,7 +1,6 @@
 using System;
 using Godot;
 using SteampunkShooter.player;
-using SteampunkShooter.systems.state_machine;
 using SteampunkShooter.utility;
 
 namespace SteampunkShooter.components;
@@ -19,9 +18,9 @@ public partial class MovementComponent : Component
     public delegate void AdjustHeightRequestedEventHandler(float targetHeight, float lerpSpeed, float delta);
     
     [ExportCategory("Movement Settings")]
-    [Export] private float _walkSpeed = 3.5f; // Movement speed while walking.
-    [Export] private float _sprintSpeed = 5.0f; // Movement speed while sprinting.
-    [Export] private float _crouchSpeed = 1.5f; // Movement speed while crouching.
+    [Export] private float _walkSpeed = 3.0f; // Movement speed while walking.
+    [Export] private float _sprintSpeed = 4.5f; // Movement speed while sprinting.
+    [Export] private float _crouchSpeed = 1.0f; // Movement speed while crouching.
     [Export] private float _velocityDropOffThreshold = 0.025f; // How slow the player has to be to consider them stopped. This is to combat interpolation where slowing down takes too long to reach 0.
 
     [ExportCategory("Crouch Settings")]
@@ -45,13 +44,12 @@ public partial class MovementComponent : Component
     [ExportCategory("Air Movement Settings")]
     [Export] private float _airAccelerationResponsiveness = 0.20f; // How much acceleration factor is used (E.G. 0.5 for 50% responsiveness)
     [Export] private float _airDecelerationResponsiveness = 0.15f; // How much deceleration factor is used (E.G. 0.75 for 75% responsiveness)
-    
+
     // Internal Attributes
     private CharacterBody3D _characterBody;
-    private StateMachine _stateMachine;
     private Timer _jumpBufferTimer;
     private Timer _coyoteTimer;
-    
+
     private float _currentSpeed;
     private Vector2 _inputDirection;
     private Vector2 _previousInputDirection;
@@ -64,10 +62,11 @@ public partial class MovementComponent : Component
 
     protected override void Initialise()
     {
+        base.Initialise();
+
         _currentSpeed = _walkSpeed;
         _canStand = true;
         InitialiseCharacterBody();
-        InitialiseStateMachine();
         InitialiseTimers();
     }
 
@@ -76,13 +75,6 @@ public partial class MovementComponent : Component
         _characterBody = Owner as CharacterBody3D;
         if (_characterBody == null)
             throw new NullReferenceException("MovementComponent's Owner is not of type CharacterBody3D or is null.");
-    }
-    
-    private void InitialiseStateMachine()
-    {
-        _stateMachine = GetNode<StateMachine>("StateMachine");
-        if (_stateMachine == null)
-            throw new NullReferenceException("MovementComponent's state machine is null.");
     }
 
     private void InitialiseTimers()
@@ -149,7 +141,7 @@ public partial class MovementComponent : Component
         _hasJumped = true;
         ResetJumpFlags();
     }
-    
+
     public void Crouch(float delta, bool isStanding = false)
     {
         float targetHeight = isStanding ? GetStandHeight() : _crouchHeight;
@@ -166,41 +158,40 @@ public partial class MovementComponent : Component
 
     public bool CanJump()
     {
-        return (IsOnFloor() && _isJumpRequested) || (!IsOnFloor() && !_coyoteTimer.IsStopped() && !_hasJumped && _isJumpRequested);
+        return (IsOnFloor() && _isJumpRequested) ||
+               (!IsOnFloor() && !_coyoteTimer.IsStopped() && !_hasJumped && _isJumpRequested);
     }
 
     public bool CanWalk()
     {
         return _isMovementRequested && IsOnFloor();
     }
-    
+
     public bool CanCrouch()
     {
         return _isCrouchRequested && IsOnFloor();
     }
-    
+
     public bool CanStand()
     {
         return _canStand;
     }
-    
+
     public bool CanSprint()
     {
         return _isSprintRequested && IsMoveForwardInputActive() && IsOnFloor();
     }
-    
+
     private bool IsMoveForwardInputActive()
     {
-        Vector3 forwardDirection = -_characterBody.Transform.Basis.Z.Normalized();
-        Vector3 inputVector3 = new Vector3(_inputDirection.X, 0, _inputDirection.Y).Normalized();
-        return forwardDirection.Dot(inputVector3) > 0;
+        return _inputDirection.Y < -0.6;
     }
 
     public bool IsFalling()
     {
         return !IsOnFloor() && _characterBody.Velocity.Y < 0;
     }
-    
+
     public bool IsOnFloor()
     {
         return _characterBody.IsOnFloor();
@@ -215,32 +206,32 @@ public partial class MovementComponent : Component
     {
         _coyoteTimer.Start();
     }
-    
+
     public void StopCoyoteTimer()
     {
         _coyoteTimer.Stop();
     }
-    
+
     public Vector3 GetMovementDirectionFromInput()
     {
         return (_characterBody.Transform.Basis * new Vector3(_inputDirection.X, 0, _inputDirection.Y)).Normalized();
     }
-    
+
     // TODO: Maybe dont add coupling with player specifically?
     private float GetStandHeight()
     {
         if (_characterBody is PlayerCharacterBody playerCharacterBody)
-            return playerCharacterBody.CollisionShapeStandHeight;
+            return playerCharacterBody.GetCollisionShapeStandHeight();
 
         throw new Exception("There is no stand height for this character body.");
     }
-    
+
     private void ResetJumpFlags()
     {
         _isJumpRequested = false;
         _jumpBufferTimer.Stop();
     }
-    
+
     public void ResetLandingFlags()
     {
         _hasJumped = false;
@@ -275,12 +266,12 @@ public partial class MovementComponent : Component
     {
         _isJumpRequested = false;
     }
-    
+
     public void OnCrouchRequested(bool isRequested)
     {
         _isCrouchRequested = isRequested;
     }
-    
+
     public void OnObstructionAbove(bool isObstructionAbove)
     {
         _canStand = !isObstructionAbove;
