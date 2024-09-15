@@ -2,6 +2,7 @@
 using Godot;
 using Godot.Collections;
 using SteampunkShooter.data;
+using SteampunkShooter.utility;
 using SteampunkShooter.weapons;
 
 namespace SteampunkShooter.components;
@@ -14,10 +15,12 @@ public partial class WeaponComponent : Component
 
     [ExportCategory("Settings")]
     [Export] private int _maxWeaponCount = 3;
+    [Export] private float _weaponSwitchCooldownTime = 0.25f;
 
     // Internal Attributes
     private Array<Weapon> _equippedWeapons;
     private Weapon _currentWeapon;
+    private Timer _switchWeaponTimer;
 
     protected override void Initialise()
     {
@@ -27,6 +30,7 @@ public partial class WeaponComponent : Component
             throw new NullReferenceException("WeaponComponent is not fully initialized. Please ensure all references are set.");
 
         _equippedWeapons = new Array<Weapon>();
+        _switchWeaponTimer = GDUtil.CreateTimer(this, _weaponSwitchCooldownTime);
 
         // Testing
         AddWeapon("test 1");
@@ -102,6 +106,9 @@ public partial class WeaponComponent : Component
 
     private void SwitchCurrentWeapon(int index)
     {
+        if (!_switchWeaponTimer.IsStopped())
+            return;
+        
         if (index < 0 || index >= _equippedWeapons.Count)
         {
             GD.PrintErr($"Invalid weapon index {index}. Cannot switch.");
@@ -111,6 +118,8 @@ public partial class WeaponComponent : Component
         _currentWeapon?.Hide();
         _currentWeapon = _equippedWeapons[index];
         _currentWeapon.Show();
+        
+        _switchWeaponTimer.Start();
     }
     
     // Signal Event Handlers
