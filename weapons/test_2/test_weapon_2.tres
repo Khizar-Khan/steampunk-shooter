@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://cj4bestkct3lj"]
+
+[ext_resource type="PackedScene" uid="uid://c820tgegf0vqv" path="res://weapons/test_2/test_weapon_2.tscn" id="1_khcqk"]
+[ext_resource type="Script" path="res://weapons/WeaponData.cs" id="2_nuwse"]
+
+[resource]
+script = ExtResource("2_nuwse")
+ModelScene = ExtResource("1_khcqk")
+Position = Vector3(0.15, -0.15, -0.25)
+RotationDegrees = Vector3(0, 0, 0)
+Identification = &"test 2"
+Damage = 0
+CooldownTime = 0.0
+Range = 0.0

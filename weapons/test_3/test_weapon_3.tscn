@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://dix4ar8fi8omp"]
+
+[ext_resource type="Script" path="res://weapons/Weapon.cs" id="1_3knmp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hnl27"]
+albedo_color = Color(0.576204, 0.38881, 0.839726, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jvvsh"]
+size = Vector3(0.1, 0.1, 0.5)
+
+[node name="TestWeapon3" type="Node3D"]
+script = ExtResource("1_3knmp")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_hnl27")
+mesh = SubResource("BoxMesh_jvvsh")

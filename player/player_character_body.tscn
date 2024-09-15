@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://f3mefhy61028"]
+[gd_scene load_steps=18 format=3 uid="uid://f3mefhy61028"]
 
 [ext_resource type="Script" path="res://player/PlayerCharacterBody.cs" id="1_451hh"]
 [ext_resource type="Script" path="res://components/InputComponent.cs" id="2_6rkla"]
@@ -12,6 +12,9 @@
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/movement/MovementCrouchState.cs" id="10_x1d6v"]
 [ext_resource type="Script" path="res://components/CameraComponent.cs" id="11_pl6wr"]
 [ext_resource type="Script" path="res://components/extensions/camera/CameraBobAndSwayExtension.cs" id="12_hmoua"]
+[ext_resource type="Script" path="res://components/WeaponComponent.cs" id="13_pbdvs"]
+[ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/weapon_database.tres" id="14_s63e2"]
+[ext_resource type="Script" path="res://components/extensions/state_machine/states/weapon/WeaponIdleState.cs" id="15_oywss"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
 radius = 0.25
@@ -48,26 +51,26 @@ script = ExtResource("2_6rkla")
 [node name="MovementComponent" type="Node" parent="."]
 script = ExtResource("3_154dl")
 
-[node name="StateMachineExtension" type="Node" parent="MovementComponent"]
+[node name="MovementStateMachineExtension" type="Node" parent="MovementComponent"]
 script = ExtResource("4_6vld6")
 _initialStatePath = NodePath("IdleState")
 
-[node name="IdleState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="IdleState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("5_yvuy6")
 
-[node name="WalkState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="WalkState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("6_s8fuh")
 
-[node name="JumpState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="JumpState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("7_wwb0y")
 
-[node name="SprintState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="SprintState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("8_hvm5y")
 
-[node name="FallingState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="FallingState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("9_sto0r")
 
-[node name="CrouchState" type="Node" parent="MovementComponent/StateMachineExtension"]
+[node name="CrouchState" type="Node" parent="MovementComponent/MovementStateMachineExtension"]
 script = ExtResource("10_x1d6v")
 
 [node name="CameraComponent" type="Node" parent="."]
@@ -75,3 +78,15 @@ script = ExtResource("11_pl6wr")
 
 [node name="CameraBobAndSwayExtension" type="Node" parent="CameraComponent"]
 script = ExtResource("12_hmoua")
+
+[node name="WeaponComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
+script = ExtResource("13_pbdvs")
+_weaponDatabase = ExtResource("14_s63e2")
+_weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")
+
+[node name="WeaponStateMachineComponent" type="Node" parent="WeaponComponent"]
+script = ExtResource("4_6vld6")
+_initialStatePath = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="WeaponComponent/WeaponStateMachineComponent"]
+script = ExtResource("15_oywss")

@@ -38,7 +38,7 @@ public partial class StateMachineExtension : ComponentExtension
     {
         _currentState = GetNode<State>(_initialStatePath);
         if (_currentState == null)
-            throw new NullReferenceException("Could not find initial state node.");
+            throw new NullReferenceException(Name + " could not find initial state node.");
 
         _currentState.Enter();
     }

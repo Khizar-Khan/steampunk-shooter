@@ -13,6 +13,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private const string InputComponentPath = "InputComponent";
     private const string MovementComponentPath = "MovementComponent";
     private const string CameraComponentPath = "CameraComponent";
+    private const string WeaponComponentPath = "WeaponComponent";
 
     [Signal]
     public delegate void ObstructionAboveEventHandler(bool isObstructionAbove);
@@ -26,6 +27,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private InputComponent _inputComponent;
     private MovementComponent _movementComponent;
     private CameraComponent _cameraComponent;
+    private WeaponComponent _weaponComponent;
 
     // Cached Values
     private Transform3D _originalCameraContainerTransform;
@@ -60,6 +62,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
         _inputComponent = GetNode<InputComponent>(InputComponentPath) ?? throw new NullReferenceException("InputComponent not found.");
         _movementComponent = GetNode<MovementComponent>(MovementComponentPath) ?? throw new NullReferenceException("MovementComponent not found.");
         _cameraComponent = GetNode<CameraComponent>(CameraComponentPath) ?? throw new NullReferenceException("CameraComponent not found.");
+        _weaponComponent = GetNode<WeaponComponent>(WeaponComponentPath) ?? throw new NullReferenceException("WeaponComponent not found.");
     }
 
     private void CacheValues()
@@ -117,6 +120,16 @@ public partial class PlayerCharacterBody : CharacterBody3D
         _inputComponent.Connect(
             InputComponent.SignalName.MovementInput,
             new Callable(_cameraComponent, nameof(CameraComponent.OnMovementInput))
+        );
+
+        _inputComponent.Connect(
+            InputComponent.SignalName.NextWeaponRequested,
+            new Callable(_weaponComponent, nameof(WeaponComponent.OnNextWeaponRequest))
+        );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.PreviousWeaponRequested,
+            new Callable(_weaponComponent, nameof(WeaponComponent.OnPreviousWeaponRequest))
         );
     }
 

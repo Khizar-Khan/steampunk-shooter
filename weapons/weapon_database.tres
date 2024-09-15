@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="WeaponDatabase" load_steps=5 format=3 uid="uid://53g3fe5nin7j"]
+
+[ext_resource type="Resource" uid="uid://y5xmtk3ufkb4" path="res://weapons/test_1/test_weapon_1.tres" id="1_4it34"]
+[ext_resource type="Script" path="res://weapons/WeaponDatabase.cs" id="1_o8u86"]
+[ext_resource type="Resource" uid="uid://cj4bestkct3lj" path="res://weapons/test_2/test_weapon_2.tres" id="2_cysgq"]
+[ext_resource type="Resource" uid="uid://caqx7011u4gt6" path="res://weapons/test_3/test_weapon_3.tres" id="3_7inwi"]
+
+[resource]
+script = ExtResource("1_o8u86")
+_weaponDataArray = [ExtResource("1_4it34"), ExtResource("2_cysgq"), ExtResource("3_7inwi")]
