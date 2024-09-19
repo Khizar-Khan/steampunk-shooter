@@ -1,10 +1,13 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://y5xmtk3ufkb4"]
+[gd_resource type="Resource" script_class="RangedWeaponData" load_steps=3 format=3 uid="uid://y5xmtk3ufkb4"]
 
-[ext_resource type="Script" path="res://weapons/WeaponData.cs" id="1_0adj0"]
 [ext_resource type="PackedScene" uid="uid://dq3dtvn4o1hmv" path="res://weapons/test_1/test_weapon_1.tscn" id="1_phgwg"]
+[ext_resource type="Script" path="res://weapons/data/RangedWeaponData.cs" id="2_jmv83"]
 
 [resource]
-script = ExtResource("1_0adj0")
+script = ExtResource("2_jmv83")
+MaxReserveSize = 300
+MaxMagazineSize = 30
+FireRate = 1.0
 ModelScene = ExtResource("1_phgwg")
 Position = Vector3(0.15, -0.15, -0.25)
 RotationDegrees = Vector3(0, 0, 0)

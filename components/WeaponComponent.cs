@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 using SteampunkShooter.data;
@@ -36,6 +37,9 @@ public partial class WeaponComponent : Component
         AddWeapon("test 1");
         AddWeapon("test 2");
         AddWeapon("test 3");
+        
+        if (_currentWeapon == null && _equippedWeapons.Count > 0)
+            SwitchCurrentWeapon(0);
     }
 
     private bool AddWeapon(StringName weaponIdentifier)
@@ -98,8 +102,7 @@ public partial class WeaponComponent : Component
             GD.PrintErr("Failed to attach weapon. Weapon instance is null.");
             return;
         }
-
-        weapon.Hide();
+        
         _weaponAttachmentPoint.AddChild(weapon);
         _equippedWeapons.Add(weapon);
     }
@@ -149,5 +152,10 @@ public partial class WeaponComponent : Component
         int previousIndex = (currentIndex - 1 + _equippedWeapons.Count) % _equippedWeapons.Count;
     
         SwitchCurrentWeapon(previousIndex);
+    }
+
+    public void OnWeaponAttackRequest()
+    {
+        _currentWeapon?.Attack();
     }
 }

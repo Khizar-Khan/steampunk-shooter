@@ -2,8 +2,7 @@
 
 namespace SteampunkShooter.data;
 
-[GlobalClass]
-public partial class WeaponData : Resource
+public abstract partial class WeaponData : Resource
 {
     [ExportCategory("References")]
     [Export] public PackedScene ModelScene;
@@ -15,6 +14,5 @@ public partial class WeaponData : Resource
     [ExportCategory("Specification")]
     [Export] public StringName Identification;
     [Export] public int Damage;
-    [Export] public float CooldownTime;
     [Export] public float Range;
 }

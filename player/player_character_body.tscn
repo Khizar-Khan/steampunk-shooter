@@ -13,7 +13,7 @@
 [ext_resource type="Script" path="res://components/CameraComponent.cs" id="11_pl6wr"]
 [ext_resource type="Script" path="res://components/extensions/camera/CameraBobAndSwayExtension.cs" id="12_hmoua"]
 [ext_resource type="Script" path="res://components/WeaponComponent.cs" id="13_pbdvs"]
-[ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/weapon_database.tres" id="14_s63e2"]
+[ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/data/weapon_database.tres" id="14_s63e2"]
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/weapon/WeaponIdleState.cs" id="15_oywss"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
@@ -84,9 +84,9 @@ script = ExtResource("13_pbdvs")
 _weaponDatabase = ExtResource("14_s63e2")
 _weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")
 
-[node name="WeaponStateMachineComponent" type="Node" parent="WeaponComponent"]
+[node name="WeaponStateMachineExtension" type="Node" parent="WeaponComponent"]
 script = ExtResource("4_6vld6")
 _initialStatePath = NodePath("IdleState")
 
-[node name="IdleState" type="Node" parent="WeaponComponent/WeaponStateMachineComponent"]
+[node name="IdleState" type="Node" parent="WeaponComponent/WeaponStateMachineExtension"]
 script = ExtResource("15_oywss")
