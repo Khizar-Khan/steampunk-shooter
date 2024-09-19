@@ -1,6 +1,5 @@
-using System;
+using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
 using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.components;
@@ -8,7 +7,7 @@ namespace SteampunkShooter.components;
 public abstract partial class Component : Node
 {
     private bool _isEnabled = true;
-    private Array<ComponentExtension> _extensions;
+    private List<ComponentExtension> _extensions;
 
     [Export]
     public bool IsEnabled
@@ -20,7 +19,7 @@ public abstract partial class Component : Node
                 return;
 
             _isEnabled = value;
-            
+
             if (_isEnabled)
             {
                 OnEnabled();
@@ -35,7 +34,11 @@ public abstract partial class Component : Node
     public override async void _Ready()
     {
         if (Owner == null)
-            throw new NullReferenceException("Component needs a valid owner");
+        {
+            GD.PrintErr("Component needs a valid owner. Disabling component.");
+            IsEnabled = false;
+            return;
+        }
 
         await ToSignal(Owner, "ready");
 
@@ -78,7 +81,7 @@ public abstract partial class Component : Node
     // Virtual method for initialisation logic, can be overridden by derived components
     protected virtual void Initialise()
     {
-        _extensions = new Array<ComponentExtension>();
+        _extensions = new List<ComponentExtension>();
     }
 
     // Virtual method for per-frame processing, can be overridden by derived components
@@ -107,7 +110,7 @@ public abstract partial class Component : Node
 
     private void InitialiseExtensions()
     {
-        _extensions ??= new Array<ComponentExtension>();
+        _extensions ??= new List<ComponentExtension>();
 
         foreach (Node node in GetChildren())
         {

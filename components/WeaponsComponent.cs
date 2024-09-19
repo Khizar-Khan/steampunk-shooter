@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
 using Godot;
 using Godot.Collections;
-using SteampunkShooter.data;
 using SteampunkShooter.utility;
 using SteampunkShooter.weapons;
+using SteampunkShooter.weapons.data;
 
 namespace SteampunkShooter.components;
 
-public partial class WeaponComponent : Component
+public partial class WeaponsComponent : Component
 {
     [ExportCategory("References")]
     [Export] private WeaponDatabase _weaponDatabase;
@@ -103,6 +102,7 @@ public partial class WeaponComponent : Component
             return;
         }
         
+        weapon.Hide();
         _weaponAttachmentPoint.AddChild(weapon);
         _equippedWeapons.Add(weapon);
     }

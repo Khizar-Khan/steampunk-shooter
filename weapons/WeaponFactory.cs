@@ -1,5 +1,5 @@
 ﻿using Godot;
-using SteampunkShooter.data;
+using SteampunkShooter.weapons.data;
 
 namespace SteampunkShooter.weapons;
 
@@ -12,7 +12,7 @@ public partial class WeaponFactory : RefCounted
             GD.PrintErr("WeaponData is null. Cannot create weapon.");
             return null;
         }
-        
+
         if (weaponData.ModelScene == null)
         {
             GD.PrintErr($"Weapon '{weaponData.Identification}' has no model scene assigned.");
@@ -25,7 +25,7 @@ public partial class WeaponFactory : RefCounted
             GD.PrintErr($"Failed to instantiate weapon from model scene. The scene is not of type 'Weapon'.");
             return null;
         }
-        
+
         weapon.Initialise(weaponData);
         weapon.Position = weaponData.Position;
         weapon.RotationDegrees = weaponData.RotationDegrees;

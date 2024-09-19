@@ -1,6 +1,6 @@
 using Godot;
 
-namespace SteampunkShooter.systems.state_machine.states.movement;
+namespace SteampunkShooter.components.extensions.state_machine.states.movement;
 
 public partial class MovementJumpState : MovementState
 {

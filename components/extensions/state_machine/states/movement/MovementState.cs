@@ -1,8 +1,6 @@
 using System;
-using SteampunkShooter.components;
-using SteampunkShooter.components.extensions;
 
-namespace SteampunkShooter.systems.state_machine.states.movement;
+namespace SteampunkShooter.components.extensions.state_machine.states.movement;
 
 public abstract partial class MovementState : State
 {

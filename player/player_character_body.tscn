@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://f3mefhy61028"]
+[gd_scene load_steps=16 format=3 uid="uid://f3mefhy61028"]
 
 [ext_resource type="Script" path="res://player/PlayerCharacterBody.cs" id="1_451hh"]
 [ext_resource type="Script" path="res://components/InputComponent.cs" id="2_6rkla"]
@@ -11,10 +11,8 @@
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/movement/MovementFallingState.cs" id="9_sto0r"]
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/movement/MovementCrouchState.cs" id="10_x1d6v"]
 [ext_resource type="Script" path="res://components/CameraComponent.cs" id="11_pl6wr"]
-[ext_resource type="Script" path="res://components/extensions/camera/CameraBobAndSwayExtension.cs" id="12_hmoua"]
-[ext_resource type="Script" path="res://components/WeaponComponent.cs" id="13_pbdvs"]
+[ext_resource type="Script" path="res://components/WeaponsComponent.cs" id="12_35lce"]
 [ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/data/weapon_database.tres" id="14_s63e2"]
-[ext_resource type="Script" path="res://components/extensions/state_machine/states/weapon/WeaponIdleState.cs" id="15_oywss"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
 radius = 0.25
@@ -76,17 +74,7 @@ script = ExtResource("10_x1d6v")
 [node name="CameraComponent" type="Node" parent="."]
 script = ExtResource("11_pl6wr")
 
-[node name="CameraBobAndSwayExtension" type="Node" parent="CameraComponent"]
-script = ExtResource("12_hmoua")
-
-[node name="WeaponComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
-script = ExtResource("13_pbdvs")
+[node name="WeaponsComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
+script = ExtResource("12_35lce")
 _weaponDatabase = ExtResource("14_s63e2")
 _weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")
-
-[node name="WeaponStateMachineExtension" type="Node" parent="WeaponComponent"]
-script = ExtResource("4_6vld6")
-_initialStatePath = NodePath("IdleState")
-
-[node name="IdleState" type="Node" parent="WeaponComponent/WeaponStateMachineExtension"]
-script = ExtResource("15_oywss")

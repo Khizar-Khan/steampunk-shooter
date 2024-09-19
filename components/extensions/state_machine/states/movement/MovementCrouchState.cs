@@ -1,7 +1,6 @@
 ﻿using Godot;
-using SteampunkShooter.components;
 
-namespace SteampunkShooter.systems.state_machine.states.movement;
+namespace SteampunkShooter.components.extensions.state_machine.states.movement;
 
 public partial class MovementCrouchState : MovementState
 {
@@ -46,7 +45,7 @@ public partial class MovementCrouchState : MovementState
                     return;
                 }
             }
-            
+
             // Check if the player is trying to jump while crouched
             if (MovementComponent.CanJump())
             {

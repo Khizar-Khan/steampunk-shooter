@@ -1,7 +1,6 @@
 ﻿using Godot;
-using SteampunkShooter.data;
 
-namespace SteampunkShooter.weapons;
+namespace SteampunkShooter.weapons.data;
 
 [GlobalClass]
 public partial class RangedWeaponData : WeaponData

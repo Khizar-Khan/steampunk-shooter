@@ -1,13 +1,11 @@
-using Godot;
-
-namespace SteampunkShooter.systems.state_machine.states.movement;
+namespace SteampunkShooter.components.extensions.state_machine.states.movement;
 
 public partial class MovementIdleState : MovementState
 {
     public override void PhysicsProcess(double delta)
     {
         MovementComponent.Crouch((float)delta, true);
-        
+
         if (!MovementComponent.IsOnFloor())
             MovementComponent.ApplyGravity(delta);
 
@@ -22,7 +20,7 @@ public partial class MovementIdleState : MovementState
             TransitionToState(MovementStateType.CrouchState);
             return;
         }
-        
+
         if (MovementComponent.IsFalling())
         {
             TransitionToState(MovementStateType.FallingState);

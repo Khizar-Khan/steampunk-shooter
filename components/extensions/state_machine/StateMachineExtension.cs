@@ -1,9 +1,9 @@
 using System;
 using Godot;
 using Godot.Collections;
-using SteampunkShooter.systems.state_machine.states;
+using SteampunkShooter.components.extensions.state_machine.states;
 
-namespace SteampunkShooter.components.extensions;
+namespace SteampunkShooter.components.extensions.state_machine;
 
 public partial class StateMachineExtension : ComponentExtension
 {

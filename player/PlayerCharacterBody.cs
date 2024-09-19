@@ -13,7 +13,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private const string InputComponentPath = "InputComponent";
     private const string MovementComponentPath = "MovementComponent";
     private const string CameraComponentPath = "CameraComponent";
-    private const string WeaponComponentPath = "WeaponComponent";
+    private const string WeaponsComponentPath = "WeaponsComponent";
 
     [Signal]
     public delegate void ObstructionAboveEventHandler(bool isObstructionAbove);
@@ -27,7 +27,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private InputComponent _inputComponent;
     private MovementComponent _movementComponent;
     private CameraComponent _cameraComponent;
-    private WeaponComponent _weaponComponent;
+    private WeaponsComponent _weaponsComponent;
 
     // Cached Values
     private Transform3D _originalCameraContainerTransform;
@@ -62,7 +62,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
         _inputComponent = GetNode<InputComponent>(InputComponentPath) ?? throw new NullReferenceException("InputComponent not found.");
         _movementComponent = GetNode<MovementComponent>(MovementComponentPath) ?? throw new NullReferenceException("MovementComponent not found.");
         _cameraComponent = GetNode<CameraComponent>(CameraComponentPath) ?? throw new NullReferenceException("CameraComponent not found.");
-        _weaponComponent = GetNode<WeaponComponent>(WeaponComponentPath) ?? throw new NullReferenceException("WeaponComponent not found.");
+        _weaponsComponent = GetNode<WeaponsComponent>(WeaponsComponentPath) ?? throw new NullReferenceException("WeaponsComponent not found.");
     }
 
     private void CacheValues()
@@ -124,12 +124,17 @@ public partial class PlayerCharacterBody : CharacterBody3D
 
         _inputComponent.Connect(
             InputComponent.SignalName.NextWeaponRequested,
-            new Callable(_weaponComponent, nameof(WeaponComponent.OnNextWeaponRequest))
+            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnNextWeaponRequest))
         );
         
         _inputComponent.Connect(
             InputComponent.SignalName.PreviousWeaponRequested,
-            new Callable(_weaponComponent, nameof(WeaponComponent.OnPreviousWeaponRequest))
+            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnPreviousWeaponRequest))
+        );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.WeaponAttackRequested,
+            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponAttackRequest))
         );
     }
 
@@ -152,6 +157,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
             if (targetHeight > currentHeight && _isObstructionAbove)
                 return;
 
+            // TODO: Thresholds will affect different aspects differently. For example the camera position will lerp at a different rate than the capsule height.
             bool heightAdjusted = AdjustCapsuleHeight(capsuleShape, currentHeight, targetHeight, lerpSpeed, delta, threshold);
             bool collisionPositionAdjusted = AdjustCollisionShapePosition(targetHeight, lerpSpeed, delta, threshold);
             bool cameraPositionAdjusted = AdjustCameraContainerPosition(targetHeight, lerpSpeed, delta, threshold);

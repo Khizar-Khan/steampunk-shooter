@@ -1,8 +1,7 @@
 using Godot;
 using Godot.Collections;
-using SteampunkShooter.data;
 
-namespace SteampunkShooter.weapons;
+namespace SteampunkShooter.weapons.data;
 
 [GlobalClass]
 public partial class WeaponDatabase : Resource
@@ -17,7 +16,7 @@ public partial class WeaponDatabase : Resource
     {
         if (_weaponDataDictionary != null)
             return;
-        
+
         _weaponDataDictionary = new Dictionary<StringName, WeaponData>();
         foreach (WeaponData weaponData in _weaponDataArray)
         {
@@ -35,7 +34,7 @@ public partial class WeaponDatabase : Resource
     public WeaponData GetWeaponData(string weaponIdentification)
     {
         InitialiseDictionary();
-        
+
         if (_weaponDataDictionary.TryGetValue(weaponIdentification, out WeaponData weaponData))
             return weaponData;
 

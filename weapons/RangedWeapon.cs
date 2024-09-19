@@ -1,6 +1,6 @@
 ﻿using System;
 using Godot;
-using SteampunkShooter.data;
+using SteampunkShooter.weapons.data;
 
 namespace SteampunkShooter.weapons;
 
@@ -28,39 +28,10 @@ public partial class RangedWeapon : Weapon
 
     public override void Attack()
     {
-        PerformFireAction();
-    }
-
-    private void PerformFireAction()
-    {
-        if (!CanFire())
-            return;
-
-        FireWeapon();
-    }
-
-    private bool CanFire()
-    {
-        return HasAmmoInMagazine();
-    }
-
-    private bool HasAmmoInMagazine()
-    {
-        return _currentMagazineSize > 0;
-    }
-
-    private void FireWeapon()
-    {
-        GD.Print("RangedWeapon fired");
-
-        // TODO: Implement projectile spawning or hitscan logic here
-
-        _currentMagazineSize--;
-        // TODO: Trigger animation and sound effects
-    }
-
-    public void PerformReloadAction()
-    {
-        // TODO: Implement reload logic
+        if (_currentMagazineSize > 0)
+        {
+            _currentMagazineSize--;
+            GD.Print($"{Name} Shooting. AMMO RESERVE {_currentMagazineSize} / {_currentReserveSize}");
+        }
     }
 }

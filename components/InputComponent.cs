@@ -13,6 +13,7 @@ public partial class InputComponent : Component
     private const string MovementCrouch = "crouch";
     private const string WeaponNext = "next_weapon";
     private const string WeaponPrevious = "previous_weapon";
+    private const string WeaponAttack = "attack";
 
     [Signal]
     public delegate void MovementInputEventHandler(Vector2 inputDirection);
@@ -34,6 +35,9 @@ public partial class InputComponent : Component
     
     [Signal]
     public delegate void PreviousWeaponRequestedEventHandler();
+    
+    [Signal]
+    public delegate void WeaponAttackRequestedEventHandler();
 
     protected override void Process(double delta)
     {
@@ -70,6 +74,10 @@ public partial class InputComponent : Component
 
             case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsActionPressed(WeaponPrevious):
                 EmitSignal(SignalName.PreviousWeaponRequested);
+                break;
+            
+            case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsActionPressed(WeaponAttack):
+                EmitSignal(SignalName.WeaponAttackRequested);
                 break;
         }
     }

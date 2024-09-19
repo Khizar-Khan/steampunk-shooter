@@ -158,8 +158,7 @@ public partial class MovementComponent : Component
 
     public bool CanJump()
     {
-        return (IsOnFloor() && _isJumpRequested) ||
-               (!IsOnFloor() && !_coyoteTimer.IsStopped() && !_hasJumped && _isJumpRequested);
+        return (IsOnFloor() && _isJumpRequested) || (!IsOnFloor() && !_coyoteTimer.IsStopped() && !_hasJumped && _isJumpRequested);
     }
 
     public bool CanWalk()
