@@ -136,6 +136,11 @@ public partial class PlayerCharacterBody : CharacterBody3D
             InputComponent.SignalName.WeaponAttackRequested,
             new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponAttackRequest))
         );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.WeaponReloadRequested,
+            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponReloadRequest))
+        );
     }
 
     private void CheckAndEmitObstructionSignal()

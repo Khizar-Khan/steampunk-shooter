@@ -14,6 +14,7 @@ public partial class InputComponent : Component
     private const string WeaponNext = "next_weapon";
     private const string WeaponPrevious = "previous_weapon";
     private const string WeaponAttack = "attack";
+    private const string WeaponReload = "reload";
 
     [Signal]
     public delegate void MovementInputEventHandler(Vector2 inputDirection);
@@ -37,7 +38,10 @@ public partial class InputComponent : Component
     public delegate void PreviousWeaponRequestedEventHandler();
     
     [Signal]
-    public delegate void WeaponAttackRequestedEventHandler();
+    public delegate void WeaponAttackRequestedEventHandler(bool isRequested);
+    
+    [Signal]
+    public delegate void WeaponReloadRequestedEventHandler();
 
     protected override void Process(double delta)
     {
@@ -63,6 +67,10 @@ public partial class InputComponent : Component
             case InputEventKey inputKeyEvent when inputKeyEvent.IsAction(MovementCrouch):
                 EmitSignal(SignalName.CrouchRequested, inputKeyEvent.IsPressed());
                 break;
+            
+            case InputEventKey inputKeyEvent when inputKeyEvent.IsActionPressed(WeaponReload):
+                EmitSignal(SignalName.WeaponReloadRequested);
+                break;
 
             case InputEventMouseMotion mouseMotionEvent:
                 EmitSignal(SignalName.MouseMoved, mouseMotionEvent.Relative);
@@ -76,8 +84,8 @@ public partial class InputComponent : Component
                 EmitSignal(SignalName.PreviousWeaponRequested);
                 break;
             
-            case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsActionPressed(WeaponAttack):
-                EmitSignal(SignalName.WeaponAttackRequested);
+            case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsAction(WeaponAttack):
+                EmitSignal(SignalName.WeaponAttackRequested, mouseButtonEvent.IsPressed());
                 break;
         }
     }

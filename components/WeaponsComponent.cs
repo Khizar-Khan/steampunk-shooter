@@ -21,6 +21,7 @@ public partial class WeaponsComponent : Component
     private Array<Weapon> _equippedWeapons;
     private Weapon _currentWeapon;
     private Timer _switchWeaponTimer;
+    private bool _isAttackRequested;
 
     protected override void Initialise()
     {
@@ -39,6 +40,20 @@ public partial class WeaponsComponent : Component
         
         if (_currentWeapon == null && _equippedWeapons.Count > 0)
             SwitchCurrentWeapon(0);
+    }
+
+    protected override void Process(double delta)
+    {
+        base.Process(delta);
+
+        if (_isAttackRequested)
+        {
+            _currentWeapon?.Attack();
+
+            if (_currentWeapon.WeaponData is RangedWeaponData rangedWeaponData && rangedWeaponData.FiringMode == RangedWeaponData.FireMode.SemiAutomatic)
+                _isAttackRequested = false;
+        }
+            
     }
 
     private bool AddWeapon(StringName weaponIdentifier)
@@ -154,8 +169,16 @@ public partial class WeaponsComponent : Component
         SwitchCurrentWeapon(previousIndex);
     }
 
-    public void OnWeaponAttackRequest()
+    public void OnWeaponAttackRequest(bool isRequested)
     {
-        _currentWeapon?.Attack();
+        _isAttackRequested = isRequested;
+    }
+    
+    public void OnWeaponReloadRequest()
+    {
+        if (_currentWeapon is not RangedWeapon rangedWeapon)
+            return;
+        
+        rangedWeapon.Reload();
     }
 }
