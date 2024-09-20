@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://f3mefhy61028"]
+[gd_scene load_steps=17 format=3 uid="uid://f3mefhy61028"]
 
 [ext_resource type="Script" path="res://player/PlayerCharacterBody.cs" id="1_451hh"]
 [ext_resource type="Script" path="res://components/InputComponent.cs" id="2_6rkla"]
@@ -11,7 +11,8 @@
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/movement/MovementFallingState.cs" id="9_sto0r"]
 [ext_resource type="Script" path="res://components/extensions/state_machine/states/movement/MovementCrouchState.cs" id="10_x1d6v"]
 [ext_resource type="Script" path="res://components/CameraComponent.cs" id="11_pl6wr"]
-[ext_resource type="Script" path="res://components/WeaponsComponent.cs" id="12_35lce"]
+[ext_resource type="Script" path="res://components/weapons_component/WeaponsComponent.cs" id="12_v7nmn"]
+[ext_resource type="Script" path="res://components/weapons_component/extensions/WeaponSwayExtension.cs" id="14_imoxx"]
 [ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/data/weapon_database.tres" id="14_s63e2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
@@ -75,6 +76,9 @@ script = ExtResource("10_x1d6v")
 script = ExtResource("11_pl6wr")
 
 [node name="WeaponsComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
-script = ExtResource("12_35lce")
+script = ExtResource("12_v7nmn")
 _weaponDatabase = ExtResource("14_s63e2")
 _weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")
+
+[node name="WeaponSwayExtension" type="Node" parent="WeaponsComponent"]
+script = ExtResource("14_imoxx")

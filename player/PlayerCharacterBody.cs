@@ -141,6 +141,11 @@ public partial class PlayerCharacterBody : CharacterBody3D
             InputComponent.SignalName.WeaponReloadRequested,
             new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponReloadRequest))
         );
+        
+        _inputComponent.Connect(
+            InputComponent.SignalName.MouseMoved,
+            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnMouseMotion))
+        );
     }
 
     private void CheckAndEmitObstructionSignal()
