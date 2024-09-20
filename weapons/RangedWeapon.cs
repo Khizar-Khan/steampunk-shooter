@@ -1,5 +1,6 @@
 ﻿using System;
 using Godot;
+using Godot.Collections;
 using SteampunkShooter.utility;
 using SteampunkShooter.weapons.data;
 
@@ -41,6 +42,11 @@ public partial class RangedWeapon : Weapon
             _currentMagazineSize--;
             _fireRateTimer.Start();
             GD.Print($"{Name} Ammo: {_currentMagazineSize} / {_currentReserveSize}");
+            
+            Dictionary hitScanResult = GDUtil.PerformHitScanFromScreenCenter(this, _rangedWeaponData.Range);
+            
+            if(hitScanResult != null && hitScanResult.Count > 0)
+                GD.Print(hitScanResult["collider"]);
         }
     }
     
