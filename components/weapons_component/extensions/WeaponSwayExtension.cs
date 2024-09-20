@@ -8,9 +8,9 @@ public partial class WeaponSwayExtension : ComponentExtension
     [Export] private Vector2 _minimum = new Vector2(-20.0f, -20.0f);
     [Export] private Vector2 _maximum = new Vector2(20.0f, 20.0f);
     [Export] private float _positionSpeed = 0.07f;
-    [Export] private float _positionAmount = 0.1f;
+    [Export] private float _positionAmount = 0.05f;
     [Export] private float _rotationSpeed = 0.1f;
-    [Export] private float _rotationAmount = 30.0f;
+    [Export] private float _rotationAmount = 15.0f;
 
     WeaponsComponent _weaponsComponent;
     
