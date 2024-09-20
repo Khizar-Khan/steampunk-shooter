@@ -8,23 +8,18 @@ namespace SteampunkShooter.weapons;
 public partial class RangedWeapon : Weapon
 {
     // Internal Attributes
+    private RangedWeaponData _rangedWeaponData;
     private int _currentReserveSize;
     private int _currentMagazineSize;
-    
     private Timer _fireRateTimer;
     private Timer _reloadTimer;
 
     public override void Initialise(WeaponData weaponData)
     {
         base.Initialise(weaponData);
-
-        if (WeaponData is RangedWeaponData rangedWeaponData)
-        {
-            InitialiseAmmo(rangedWeaponData);
-            InitialiseTimers(rangedWeaponData);
-        }
-        else
-            throw new InvalidCastException("Invalid WeaponData type assigned to RangedWeapon.");
+        _rangedWeaponData = weaponData as RangedWeaponData ?? throw new InvalidCastException("Invalid WeaponData type.");
+        InitialiseAmmo(_rangedWeaponData);
+        InitialiseTimers(_rangedWeaponData);
     }
 
     private void InitialiseAmmo(RangedWeaponData rangedWeaponData)
@@ -51,7 +46,7 @@ public partial class RangedWeapon : Weapon
     
     public void Reload()
     {
-        if (_reloadTimer.IsStopped() && (WeaponData as RangedWeaponData).MaxMagazineSize != _currentMagazineSize)
+        if (_reloadTimer.IsStopped() && _rangedWeaponData.MaxMagazineSize != _currentMagazineSize)
         {
             _reloadTimer.Start();
             GD.Print($"{Name} Reloading.");
@@ -61,7 +56,7 @@ public partial class RangedWeapon : Weapon
     // Signal Event Handlers
     private void OnReloadTimerTimeout()
     {
-        int ammoNeeded = (WeaponData as RangedWeaponData).MaxMagazineSize - _currentMagazineSize;
+        int ammoNeeded = _rangedWeaponData.MaxMagazineSize - _currentMagazineSize;
         int ammoToReload = Math.Min(ammoNeeded, _currentReserveSize);
 
         _currentMagazineSize += ammoToReload;

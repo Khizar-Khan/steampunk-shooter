@@ -74,7 +74,6 @@ script = ExtResource("10_x1d6v")
 [node name="CameraComponent" type="Node" parent="."]
 script = ExtResource("11_pl6wr")
 
-[node name="WeaponsComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
+[node name="WeaponsComponent" type="Node" parent="."]
 script = ExtResource("12_35lce")
 _weaponDatabase = ExtResource("14_s63e2")
-_weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")

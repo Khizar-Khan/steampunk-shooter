@@ -27,11 +27,6 @@ public partial class WeaponFactory : RefCounted
         }
 
         weapon.Initialise(weaponData);
-        weapon.Position = weaponData.Position;
-        weapon.RotationDegrees = weaponData.RotationDegrees;
-
-        // TODO: Set weapon-specific properties if any (e.g., Damage, CooldownTime, Range)
-
         return weapon;
     }
 }

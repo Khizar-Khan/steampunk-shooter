@@ -13,6 +13,14 @@ public abstract partial class Weapon : Node3D
         WeaponData = weaponData;
         if (WeaponData == null)
             throw new NullReferenceException("WeaponData is null.");
+
+        ConfigureWeapon(weaponData);
+    }
+    
+    protected virtual void ConfigureWeapon(WeaponData weaponData)
+    {
+        Position = weaponData.Position;
+        RotationDegrees = weaponData.RotationDegrees;
     }
 
     public abstract void Attack();
