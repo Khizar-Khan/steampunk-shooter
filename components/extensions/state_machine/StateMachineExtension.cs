@@ -56,7 +56,10 @@ public partial class StateMachineExtension : ComponentExtension
     public void TransitionTo(string key)
     {
         if (!_states.ContainsKey(key) || _currentState == _states[key])
-            throw new NullReferenceException("State does not exist.");
+        {
+            GD.PrintErr($"State '{key}' does not exist or is the current state. Current State = '{_currentState.Name}'.");
+            return;
+        }
 
         _currentState.Exit();
         _currentState = _states[key];

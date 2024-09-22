@@ -46,6 +46,6 @@ public partial class WeaponDatabase : Resource
     public PackedScene GetWeaponScene(string weaponIdentification)
     {
         WeaponData weaponData = GetWeaponData(weaponIdentification);
-        return weaponData?.ModelScene;
+        return weaponData?.WeaponModelScene;
     }
 }

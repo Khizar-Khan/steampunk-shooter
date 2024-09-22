@@ -19,7 +19,7 @@
 [ext_resource type="Script" path="res://components/weapons_component/extensions/WeaponRecoilExtension.cs" id="15_quvpp"]
 [ext_resource type="Script" path="res://components/weapons_component/extensions/state_machine/states/WeaponAttackState.cs" id="16_cu82c"]
 [ext_resource type="Script" path="res://components/weapons_component/extensions/state_machine/states/WeaponReloadState.cs" id="17_wd570"]
-[ext_resource type="Script" path="res://components/weapons_component/extensions/state_machine/states/WeaponUnEquipState.cs" id="18_unsof"]
+[ext_resource type="Script" path="res://components/weapons_component/extensions/state_machine/states/WeaponUnequipState.cs" id="18_pitob"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
 radius = 0.25
@@ -109,8 +109,8 @@ script = ExtResource("16_cu82c")
 [node name="ReloadState" type="Node" parent="WeaponsComponent/WeaponStateMachineExtension"]
 script = ExtResource("17_wd570")
 
-[node name="UnEquipState" type="Node" parent="WeaponsComponent/WeaponStateMachineExtension"]
-script = ExtResource("18_unsof")
+[node name="UnequipState" type="Node" parent="WeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("18_pitob")
 
 [node name="WeaponSwayExtension" type="Node" parent="WeaponsComponent" node_paths=PackedStringArray("_swayNode")]
 script = ExtResource("14_imoxx")

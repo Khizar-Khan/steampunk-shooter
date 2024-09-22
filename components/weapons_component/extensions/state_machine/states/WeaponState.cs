@@ -9,7 +9,7 @@ public abstract partial class WeaponState : State
     protected enum WeaponStateType
     {
         EquipState,
-        UnEquipState,
+        UnequipState,
         IdleState,
         AttackState,
         ReloadState

@@ -13,13 +13,13 @@ public partial class WeaponFactory : RefCounted
             return null;
         }
 
-        if (weaponData.ModelScene == null)
+        if (weaponData.WeaponModelScene == null)
         {
             GD.PrintErr($"Weapon '{weaponData.Identification}' has no model scene assigned.");
             return null;
         }
 
-        Node instance = weaponData.ModelScene.Instantiate();
+        Node instance = weaponData.WeaponModelScene.Instantiate();
         if (instance is not Weapon weapon)
         {
             GD.PrintErr($"Failed to instantiate weapon from model scene. The scene is not of type 'Weapon'.");

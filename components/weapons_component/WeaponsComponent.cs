@@ -20,10 +20,11 @@ public partial class WeaponsComponent : Component
 
     // Cached Values
     private Array<Weapon> _equippedWeapons;
-    private Weapon _currentWeapon;
     private Timer _switchWeaponTimer;
-    private bool _isAttackRequested;
     
+    public Weapon CurrentWeapon { get; private set; }
+    public bool IsAttackRequested;
+    public bool IsReloadRequested;
     public Vector2 MouseDelta;
 
     protected override void Initialise()
@@ -44,20 +45,6 @@ public partial class WeaponsComponent : Component
         }
         
         StartingWeapons(_startingWeapons);
-    }
-
-    protected override void Process(double delta)
-    {
-        base.Process(delta);
-
-        if (_isAttackRequested)
-        {
-            _currentWeapon?.Attack();
-
-            // TODO: This looks bad...
-            if (_currentWeapon.WeaponData is RangedWeaponData rangedWeaponData && rangedWeaponData.FiringMode == RangedWeaponData.FireMode.SemiAutomatic)
-                _isAttackRequested = false;
-        }
     }
 
     private void StartingWeapons(Array<StringName> weaponIdentifiers)
@@ -144,10 +131,7 @@ public partial class WeaponsComponent : Component
             return;
         }
         
-        _currentWeapon?.Hide();
-        _currentWeapon = _equippedWeapons[index];
-        _currentWeapon.Show();
-        
+        CurrentWeapon = _equippedWeapons[index];
         _switchWeaponTimer.Start();
     }
     
@@ -160,7 +144,7 @@ public partial class WeaponsComponent : Component
             return;
         }
         
-        int currentIndex = _currentWeapon == null ? -1 : _equippedWeapons.IndexOf(_currentWeapon);
+        int currentIndex = CurrentWeapon == null ? -1 : _equippedWeapons.IndexOf(CurrentWeapon);
         int nextIndex = (currentIndex + 1) % _equippedWeapons.Count;
         
         SwitchCurrentWeapon(nextIndex);
@@ -174,7 +158,7 @@ public partial class WeaponsComponent : Component
             return;
         }
     
-        int currentIndex = _currentWeapon == null ? 0 : _equippedWeapons.IndexOf(_currentWeapon);
+        int currentIndex = CurrentWeapon == null ? 0 : _equippedWeapons.IndexOf(CurrentWeapon);
         int previousIndex = (currentIndex - 1 + _equippedWeapons.Count) % _equippedWeapons.Count;
     
         SwitchCurrentWeapon(previousIndex);
@@ -182,18 +166,17 @@ public partial class WeaponsComponent : Component
 
     public void OnWeaponAttackRequest(bool isRequested)
     {
-        _isAttackRequested = isRequested;
+        IsAttackRequested = isRequested;
     }
     
     public void OnWeaponReloadRequest()
     {
-        if (_currentWeapon is not RangedWeapon rangedWeapon)
+        if (CurrentWeapon is not RangedWeapon)
             return;
-        
-        rangedWeapon.Reload();
+
+        IsReloadRequested = true;
     }
     
-    // Signal Event Handlers
     public void OnMouseMotion(Vector2 mouseDelta)
     {
         if (!IsEnabled)
