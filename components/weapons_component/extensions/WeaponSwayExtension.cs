@@ -1,6 +1,5 @@
 ﻿using Godot;
 using SteampunkShooter.components.extensions;
-using SteampunkShooter.utility;
 
 namespace SteampunkShooter.components.weapons_component.extensions;
 

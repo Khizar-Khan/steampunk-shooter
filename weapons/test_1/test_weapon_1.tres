@@ -7,9 +7,9 @@
 script = ExtResource("2_jmv83")
 MaxReserveSize = 300
 MaxMagazineSize = 30
-FireRate = 10.0
+FireRate = 5.0
 ReloadTime = 2.5
-FiringMode = 1
+FiringMode = 0
 ModelScene = ExtResource("1_phgwg")
 Position = Vector3(0.15, -0.15, -0.25)
 RotationDegrees = Vector3(0, 0, 0)
