@@ -27,6 +27,7 @@ public partial class WeaponFactory : RefCounted
         }
 
         weapon.Initialise(weaponData);
+        weapon.Hide();
         return weapon;
     }
 }

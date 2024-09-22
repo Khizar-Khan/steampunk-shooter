@@ -15,6 +15,7 @@ public partial class WeaponsComponent : Component
 
     [ExportCategory("Settings")]
     [Export] private int _maxWeaponCount = 3;
+    [Export] private Array<StringName> _startingWeapons = new();
     [Export] private float _weaponSwitchCooldownTime = 0.25f;
 
     // Cached Values
@@ -35,13 +36,14 @@ public partial class WeaponsComponent : Component
         _equippedWeapons = new Array<Weapon>();
         _switchWeaponTimer = GDUtil.CreateTimer(this, _weaponSwitchCooldownTime);
 
-        // Testing
-        AddWeapon("test 1");
-        AddWeapon("test 2");
-        AddWeapon("test 3");
+        if (!(_startingWeapons.Count > 0))
+        {
+            GD.PrintErr("Starting weapons not set.");
+            IsEnabled = false;
+            return;
+        }
         
-        if (_currentWeapon == null && _equippedWeapons.Count > 0)
-            SwitchCurrentWeapon(0);
+        StartingWeapons(_startingWeapons);
     }
 
     protected override void Process(double delta)
@@ -56,7 +58,14 @@ public partial class WeaponsComponent : Component
             if (_currentWeapon.WeaponData is RangedWeaponData rangedWeaponData && rangedWeaponData.FiringMode == RangedWeaponData.FireMode.SemiAutomatic)
                 _isAttackRequested = false;
         }
-            
+    }
+
+    private void StartingWeapons(Array<StringName> weaponIdentifiers)
+    {
+        foreach (StringName weaponIdentifier in weaponIdentifiers)
+            AddWeapon(weaponIdentifier);
+        
+        SwitchCurrentWeapon(0);
     }
 
     private bool AddWeapon(StringName weaponIdentifier)
@@ -120,7 +129,6 @@ public partial class WeaponsComponent : Component
             return;
         }
         
-        weapon.Hide();
         _weaponAttachmentPoint.AddChild(weapon);
         _equippedWeapons.Add(weapon);
     }

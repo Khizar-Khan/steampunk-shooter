@@ -91,6 +91,7 @@ script = ExtResource("11_pl6wr")
 script = ExtResource("12_v7nmn")
 _weaponDatabase = ExtResource("14_s63e2")
 _weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode/RecoilNode/WeaponAttachmentPoint")
+_startingWeapons = [&"test 1", &"test 2", &"test 3"]
 
 [node name="WeaponStateMachineExtension" type="Node" parent="WeaponsComponent"]
 script = ExtResource("4_6vld6")
