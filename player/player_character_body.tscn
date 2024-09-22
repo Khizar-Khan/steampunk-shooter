@@ -32,7 +32,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
 
 [node name="Camera" type="Camera3D" parent="CameraContainer/CameraController"]
 
-[node name="WeaponAttachmentPoint" type="Node3D" parent="CameraContainer/CameraController/Camera"]
+[node name="WeaponHolder" type="Node3D" parent="CameraContainer/CameraController/Camera"]
+
+[node name="SwayNode" type="Node3D" parent="CameraContainer/CameraController/Camera/WeaponHolder"]
+
+[node name="WeaponAttachmentPoint" type="Node3D" parent="CameraContainer/CameraController/Camera/WeaponHolder/SwayNode"]
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -78,7 +82,8 @@ script = ExtResource("11_pl6wr")
 [node name="WeaponsComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
 script = ExtResource("12_v7nmn")
 _weaponDatabase = ExtResource("14_s63e2")
-_weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponAttachmentPoint")
+_weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode/WeaponAttachmentPoint")
 
-[node name="WeaponSwayExtension" type="Node" parent="WeaponsComponent"]
+[node name="WeaponSwayExtension" type="Node" parent="WeaponsComponent" node_paths=PackedStringArray("_swayNode")]
 script = ExtResource("14_imoxx")
+_swayNode = NodePath("../../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode")

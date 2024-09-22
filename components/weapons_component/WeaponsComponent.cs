@@ -5,7 +5,7 @@ using SteampunkShooter.utility;
 using SteampunkShooter.weapons;
 using SteampunkShooter.weapons.data;
 
-namespace SteampunkShooter.components;
+namespace SteampunkShooter.components.weapons_component;
 
 public partial class WeaponsComponent : Component
 {
@@ -17,9 +17,9 @@ public partial class WeaponsComponent : Component
     [Export] private int _maxWeaponCount = 3;
     [Export] private float _weaponSwitchCooldownTime = 0.25f;
 
-    // Internal Attributes
+    // Cached Values
     private Array<Weapon> _equippedWeapons;
-    public Weapon CurrentWeapon;
+    private Weapon _currentWeapon;
     private Timer _switchWeaponTimer;
     private bool _isAttackRequested;
     
@@ -40,7 +40,7 @@ public partial class WeaponsComponent : Component
         AddWeapon("test 2");
         AddWeapon("test 3");
         
-        if (CurrentWeapon == null && _equippedWeapons.Count > 0)
+        if (_currentWeapon == null && _equippedWeapons.Count > 0)
             SwitchCurrentWeapon(0);
     }
 
@@ -50,9 +50,10 @@ public partial class WeaponsComponent : Component
 
         if (_isAttackRequested)
         {
-            CurrentWeapon?.Attack();
+            _currentWeapon?.Attack();
 
-            if (CurrentWeapon.WeaponData is RangedWeaponData rangedWeaponData && rangedWeaponData.FiringMode == RangedWeaponData.FireMode.SemiAutomatic)
+            // TODO: This looks bad...
+            if (_currentWeapon.WeaponData is RangedWeaponData rangedWeaponData && rangedWeaponData.FiringMode == RangedWeaponData.FireMode.SemiAutomatic)
                 _isAttackRequested = false;
         }
             
@@ -135,9 +136,9 @@ public partial class WeaponsComponent : Component
             return;
         }
         
-        CurrentWeapon?.Hide();
-        CurrentWeapon = _equippedWeapons[index];
-        CurrentWeapon.Show();
+        _currentWeapon?.Hide();
+        _currentWeapon = _equippedWeapons[index];
+        _currentWeapon.Show();
         
         _switchWeaponTimer.Start();
     }
@@ -151,7 +152,7 @@ public partial class WeaponsComponent : Component
             return;
         }
         
-        int currentIndex = CurrentWeapon == null ? -1 : _equippedWeapons.IndexOf(CurrentWeapon);
+        int currentIndex = _currentWeapon == null ? -1 : _equippedWeapons.IndexOf(_currentWeapon);
         int nextIndex = (currentIndex + 1) % _equippedWeapons.Count;
         
         SwitchCurrentWeapon(nextIndex);
@@ -165,7 +166,7 @@ public partial class WeaponsComponent : Component
             return;
         }
     
-        int currentIndex = CurrentWeapon == null ? 0 : _equippedWeapons.IndexOf(CurrentWeapon);
+        int currentIndex = _currentWeapon == null ? 0 : _equippedWeapons.IndexOf(_currentWeapon);
         int previousIndex = (currentIndex - 1 + _equippedWeapons.Count) % _equippedWeapons.Count;
     
         SwitchCurrentWeapon(previousIndex);
@@ -178,7 +179,7 @@ public partial class WeaponsComponent : Component
     
     public void OnWeaponReloadRequest()
     {
-        if (CurrentWeapon is not RangedWeapon rangedWeapon)
+        if (_currentWeapon is not RangedWeapon rangedWeapon)
             return;
         
         rangedWeapon.Reload();

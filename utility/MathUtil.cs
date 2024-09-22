@@ -14,4 +14,13 @@ public partial class MathUtil : RefCounted
     {
         return horizontalVelocity * (Math.Sqrt(2 * verticalHeight / Math.Abs(gravityJumping)) + Math.Sqrt(2 * verticalHeight / Math.Abs(gravityFalling)));;
     }
+    
+    public static Vector3 RetrieveRotationDegrees(Transform3D transform)
+    {
+        return new Vector3(
+            Mathf.RadToDeg(transform.Basis.GetEuler().X),
+            Mathf.RadToDeg(transform.Basis.GetEuler().Y),
+            Mathf.RadToDeg(transform.Basis.GetEuler().Z)
+        );
+    }
 }

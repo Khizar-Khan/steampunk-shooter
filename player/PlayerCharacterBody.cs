@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using SteampunkShooter.components;
+using SteampunkShooter.components.weapons_component;
 
 namespace SteampunkShooter.player;
 
