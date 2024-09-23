@@ -1,7 +1,6 @@
 using System;
 using Godot;
 using Godot.Collections;
-using SteampunkShooter.components.extensions.state_machine.states;
 
 namespace SteampunkShooter.components.extensions.state_machine;
 

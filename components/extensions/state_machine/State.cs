@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace SteampunkShooter.components.extensions.state_machine.states;
+namespace SteampunkShooter.components.extensions.state_machine;
 
 public abstract partial class State : Node
 {
