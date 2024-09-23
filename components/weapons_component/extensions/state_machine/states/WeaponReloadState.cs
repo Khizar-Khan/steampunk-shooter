@@ -1,6 +1,8 @@
-﻿namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
+﻿using SteampunkShooter.components.extensions.state_machine;
 
-public partial class WeaponReloadState : WeaponState
+namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
+
+public partial class WeaponReloadState : ComponentState<WeaponsComponent, WeaponStates>
 {
     protected override void HandleTransitions()
     {

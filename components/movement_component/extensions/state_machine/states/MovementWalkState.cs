@@ -1,6 +1,8 @@
+using SteampunkShooter.components.extensions.state_machine;
+
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementWalkState : MovementState
+public partial class MovementWalkState : ComponentState<MovementComponent, MovementStates>
 {
     public override void Enter()
     {
@@ -23,31 +25,31 @@ public partial class MovementWalkState : MovementState
     {
         if (Component.CanCrouch())
         {
-            TransitionToState(MovementStateType.CrouchState);
+            TransitionToState(MovementStates.CrouchState);
             return;
         }
 
         if (Component.IsFalling())
         {
-            TransitionToState(MovementStateType.FallingState);
+            TransitionToState(MovementStates.FallingState);
             return;
         }
 
         if (Component.CanJump())
         {
-            TransitionToState(MovementStateType.JumpState);
+            TransitionToState(MovementStates.JumpState);
             return;
         }
 
         if (Component.IsIdle())
         {
-            TransitionToState(MovementStateType.IdleState);
+            TransitionToState(MovementStates.IdleState);
             return;
         }
 
         if (Component.CanSprint())
         {
-            TransitionToState(MovementStateType.SprintState);
+            TransitionToState(MovementStates.SprintState);
             return;
         }
     }

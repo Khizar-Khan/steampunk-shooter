@@ -1,6 +1,8 @@
-﻿namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
+﻿using SteampunkShooter.components.extensions.state_machine;
 
-public partial class WeaponUnequipState : WeaponState
+namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
+
+public partial class WeaponUnequipState : ComponentState<WeaponsComponent, WeaponStates>
 {
     protected override void HandleTransitions()
     {

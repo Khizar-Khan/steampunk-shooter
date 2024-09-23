@@ -1,8 +1,9 @@
 ﻿using Godot;
+using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementFallingState : MovementState
+public partial class MovementFallingState : ComponentState<MovementComponent, MovementStates>
 {
     public override void Enter()
     {
@@ -33,7 +34,7 @@ public partial class MovementFallingState : MovementState
     {
         if (Component.CanJump())
         {
-            TransitionToState(MovementStateType.JumpState);
+            TransitionToState(MovementStates.JumpState);
             return;
         }
 
@@ -42,25 +43,25 @@ public partial class MovementFallingState : MovementState
 
         if (Component.CanCrouch())
         {
-            TransitionToState(MovementStateType.CrouchState);
+            TransitionToState(MovementStates.CrouchState);
             return;
         }
 
         if (Component.CanSprint())
         {
-            TransitionToState(MovementStateType.SprintState);
+            TransitionToState(MovementStates.SprintState);
             return;
         }
 
         if (Component.CanWalk())
         {
-            TransitionToState(MovementStateType.WalkState);
+            TransitionToState(MovementStates.WalkState);
             return;
         }
 
         if (Component.IsIdle())
         {
-            TransitionToState(MovementStateType.IdleState);
+            TransitionToState(MovementStates.IdleState);
             return;
         }
     }

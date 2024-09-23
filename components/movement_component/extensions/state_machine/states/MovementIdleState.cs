@@ -1,6 +1,8 @@
+using SteampunkShooter.components.extensions.state_machine;
+
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementIdleState : MovementState
+public partial class MovementIdleState : ComponentState<MovementComponent, MovementStates>
 {
     public override void PhysicsProcess(double delta)
     {
@@ -17,25 +19,25 @@ public partial class MovementIdleState : MovementState
     {
         if (Component.CanCrouch())
         {
-            TransitionToState(MovementStateType.CrouchState);
+            TransitionToState(MovementStates.CrouchState);
             return;
         }
 
         if (Component.IsFalling())
         {
-            TransitionToState(MovementStateType.FallingState);
+            TransitionToState(MovementStates.FallingState);
             return;
         }
 
         if (Component.CanJump())
         {
-            TransitionToState(MovementStateType.JumpState);
+            TransitionToState(MovementStates.JumpState);
             return;
         }
 
         if (Component.IsIdle())
             return;
 
-        TransitionToState(Component.CanSprint() ? MovementStateType.SprintState : MovementStateType.WalkState);
+        TransitionToState(Component.CanSprint() ? MovementStates.SprintState : MovementStates.WalkState);
     }
 }

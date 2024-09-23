@@ -1,8 +1,9 @@
 ﻿using Godot;
+using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementCrouchState : MovementState
+public partial class MovementCrouchState : ComponentState<MovementComponent, MovementStates>
 {
     public override void Enter()
     {
@@ -28,7 +29,7 @@ public partial class MovementCrouchState : MovementState
         {
             if (Component.IsIdle())
             {
-                TransitionToState(MovementStateType.IdleState);
+                TransitionToState(MovementStates.IdleState);
                 return;
             }
 
@@ -36,12 +37,12 @@ public partial class MovementCrouchState : MovementState
             {
                 if (Component.CanSprint())
                 {
-                    TransitionToState(MovementStateType.SprintState);
+                    TransitionToState(MovementStates.SprintState);
                     return;
                 }
                 else
                 {
-                    TransitionToState(MovementStateType.WalkState);
+                    TransitionToState(MovementStates.WalkState);
                     return;
                 }
             }
@@ -49,7 +50,7 @@ public partial class MovementCrouchState : MovementState
             // Check if the player is trying to jump while crouched
             if (Component.CanJump())
             {
-                TransitionToState(MovementStateType.JumpState);
+                TransitionToState(MovementStates.JumpState);
                 return;
             }
         }
@@ -57,7 +58,7 @@ public partial class MovementCrouchState : MovementState
         // Check if the player is falling (e.g., walked off a ledge or was pushed)
         if (Component.IsFalling())
         {
-            TransitionToState(MovementStateType.FallingState);
+            TransitionToState(MovementStates.FallingState);
             return;
         }
     }

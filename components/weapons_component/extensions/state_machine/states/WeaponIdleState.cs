@@ -1,8 +1,9 @@
 ﻿using Godot;
+using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
 
-public partial class WeaponIdleState : WeaponState
+public partial class WeaponIdleState : ComponentState<WeaponsComponent, WeaponStates>
 {
     public override void Enter()
     {
@@ -14,7 +15,7 @@ public partial class WeaponIdleState : WeaponState
     {
         if (Component.IsAttackRequested)
         {
-            TransitionToState(WeaponStateType.AttackState);
+            TransitionToState(WeaponStates.AttackState);
         }
     }
 }
