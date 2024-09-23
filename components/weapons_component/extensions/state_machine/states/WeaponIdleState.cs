@@ -12,7 +12,7 @@ public partial class WeaponIdleState : WeaponState
 
     protected override void HandleTransitions()
     {
-        if (WeaponsComponent.IsAttackRequested)
+        if (Component.IsAttackRequested)
         {
             TransitionToState(WeaponStateType.AttackState);
         }

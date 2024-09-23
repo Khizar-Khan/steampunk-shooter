@@ -1,8 +1,8 @@
-using System;
+using SteampunkShooter.components.extensions.state_machine;
 
-namespace SteampunkShooter.components.extensions.state_machine.states.movement;
+namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public abstract partial class MovementState : State
+public abstract partial class MovementState : ComponentState<MovementComponent>
 {
     protected enum MovementStateType
     {
@@ -12,21 +12,5 @@ public abstract partial class MovementState : State
         JumpState,
         FallingState,
         CrouchState
-    }
-
-    protected MovementComponent MovementComponent { get; private set; }
-
-    public override void Initialise(StateMachineExtension stateMachineExtension)
-    {
-        base.Initialise(stateMachineExtension);
-        MovementComponent = StateMachineExtension.ParentComponent as MovementComponent;
-
-        if (MovementComponent == null)
-            throw new NullReferenceException("StateMachine's component is not a MovementComponent.");
-    }
-
-    protected void TransitionToState(MovementStateType state)
-    {
-        StateMachineExtension.TransitionTo(state.ToString());
     }
 }

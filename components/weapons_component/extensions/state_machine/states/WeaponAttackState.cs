@@ -15,15 +15,15 @@ public partial class WeaponAttackState : WeaponState
     {
         base.PhysicsProcess(delta);
 
-        if (WeaponsComponent.IsAttackRequested)
+        if (Component.IsAttackRequested)
         {
-            WeaponsComponent.CurrentWeapon.Attack();
+            Component.CurrentWeapon.Attack();
         }
     }
 
     protected override void HandleTransitions()
     {
-        if (!WeaponsComponent.IsAttackRequested)
+        if (!Component.IsAttackRequested)
         {
             TransitionToState(WeaponStateType.IdleState);
         }

@@ -1,54 +1,54 @@
-namespace SteampunkShooter.components.extensions.state_machine.states.movement;
+namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
 public partial class MovementSprintState : MovementState
 {
     public override void Enter()
     {
         base.Enter();
-        MovementComponent.SetSpeed(MovementComponent.SpeedType.Sprint);
+        Component.SetSpeed(MovementComponent.SpeedType.Sprint);
     }
 
     public override void PhysicsProcess(double delta)
     {
-        MovementComponent.Crouch((float)delta, true);
+        Component.Crouch((float)delta, true);
 
-        if (!MovementComponent.IsOnFloor())
-            MovementComponent.ApplyGravity(delta);
+        if (!Component.IsOnFloor())
+            Component.ApplyGravity(delta);
 
-        MovementComponent.ApplyMovement(MovementComponent.GetMovementDirectionFromInput(), delta);
-        MovementComponent.MoveAndSlide();
+        Component.ApplyMovement(Component.GetMovementDirectionFromInput(), delta);
+        Component.MoveAndSlide();
     }
 
     protected override void HandleTransitions()
     {
-        if (MovementComponent.CanCrouch())
+        if (Component.CanCrouch())
         {
             TransitionToState(MovementStateType.CrouchState);
             return;
         }
 
-        if (MovementComponent.IsFalling())
+        if (Component.IsFalling())
         {
             TransitionToState(MovementStateType.FallingState);
             return;
         }
 
-        if (MovementComponent.CanJump())
+        if (Component.CanJump())
         {
             TransitionToState(MovementStateType.JumpState);
             return;
         }
 
-        if (MovementComponent.CanSprint())
+        if (Component.CanSprint())
             return;
 
-        if (MovementComponent.CanWalk())
+        if (Component.CanWalk())
         {
             TransitionToState(MovementStateType.WalkState);
             return;
         }
 
-        if (MovementComponent.IsIdle())
+        if (Component.IsIdle())
         {
             TransitionToState(MovementStateType.IdleState);
             return;

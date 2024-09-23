@@ -1,41 +1,41 @@
-namespace SteampunkShooter.components.extensions.state_machine.states.movement;
+namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
 public partial class MovementIdleState : MovementState
 {
     public override void PhysicsProcess(double delta)
     {
-        MovementComponent.Crouch((float)delta, true);
+        Component.Crouch((float)delta, true);
 
-        if (!MovementComponent.IsOnFloor())
-            MovementComponent.ApplyGravity(delta);
+        if (!Component.IsOnFloor())
+            Component.ApplyGravity(delta);
 
-        MovementComponent.RemoveMovement(delta);
-        MovementComponent.MoveAndSlide();
+        Component.RemoveMovement(delta);
+        Component.MoveAndSlide();
     }
 
     protected override void HandleTransitions()
     {
-        if (MovementComponent.CanCrouch())
+        if (Component.CanCrouch())
         {
             TransitionToState(MovementStateType.CrouchState);
             return;
         }
 
-        if (MovementComponent.IsFalling())
+        if (Component.IsFalling())
         {
             TransitionToState(MovementStateType.FallingState);
             return;
         }
 
-        if (MovementComponent.CanJump())
+        if (Component.CanJump())
         {
             TransitionToState(MovementStateType.JumpState);
             return;
         }
 
-        if (MovementComponent.IsIdle())
+        if (Component.IsIdle())
             return;
 
-        TransitionToState(MovementComponent.CanSprint() ? MovementStateType.SprintState : MovementStateType.WalkState);
+        TransitionToState(Component.CanSprint() ? MovementStateType.SprintState : MovementStateType.WalkState);
     }
 }

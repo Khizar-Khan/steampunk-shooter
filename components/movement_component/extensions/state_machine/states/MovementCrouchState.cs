@@ -1,40 +1,40 @@
 ﻿using Godot;
 
-namespace SteampunkShooter.components.extensions.state_machine.states.movement;
+namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
 public partial class MovementCrouchState : MovementState
 {
     public override void Enter()
     {
         base.Enter();
-        MovementComponent.SetSpeed(MovementComponent.SpeedType.Crouch);
+        Component.SetSpeed(MovementComponent.SpeedType.Crouch);
     }
 
     public override void PhysicsProcess(double delta)
     {
-        MovementComponent.Crouch((float)delta);
+        Component.Crouch((float)delta);
 
-        if (!MovementComponent.IsOnFloor())
-            MovementComponent.ApplyGravity(delta);
+        if (!Component.IsOnFloor())
+            Component.ApplyGravity(delta);
 
-        MovementComponent.ApplyMovement(MovementComponent.GetMovementDirectionFromInput(), delta);
-        MovementComponent.MoveAndSlide();
+        Component.ApplyMovement(Component.GetMovementDirectionFromInput(), delta);
+        Component.MoveAndSlide();
     }
 
     protected override void HandleTransitions()
     {
         // Check if the player is no longer requesting to crouch (e.g., crouch key is released)
-        if (!MovementComponent.CanCrouch() && MovementComponent.CanStand())
+        if (!Component.CanCrouch() && Component.CanStand())
         {
-            if (MovementComponent.IsIdle())
+            if (Component.IsIdle())
             {
                 TransitionToState(MovementStateType.IdleState);
                 return;
             }
 
-            if (MovementComponent.GetMovementDirectionFromInput() != Vector3.Zero)
+            if (Component.GetMovementDirectionFromInput() != Vector3.Zero)
             {
-                if (MovementComponent.CanSprint())
+                if (Component.CanSprint())
                 {
                     TransitionToState(MovementStateType.SprintState);
                     return;
@@ -47,7 +47,7 @@ public partial class MovementCrouchState : MovementState
             }
 
             // Check if the player is trying to jump while crouched
-            if (MovementComponent.CanJump())
+            if (Component.CanJump())
             {
                 TransitionToState(MovementStateType.JumpState);
                 return;
@@ -55,7 +55,7 @@ public partial class MovementCrouchState : MovementState
         }
 
         // Check if the player is falling (e.g., walked off a ledge or was pushed)
-        if (MovementComponent.IsFalling())
+        if (Component.IsFalling())
         {
             TransitionToState(MovementStateType.FallingState);
             return;

@@ -1,64 +1,64 @@
 ﻿using Godot;
 
-namespace SteampunkShooter.components.extensions.state_machine.states.movement;
+namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
 public partial class MovementFallingState : MovementState
 {
     public override void Enter()
     {
         base.Enter();
-        MovementComponent.StartCoyoteTimer();
+        Component.StartCoyoteTimer();
     }
 
     public override void Exit()
     {
         base.Exit();
-        MovementComponent.StopCoyoteTimer();
-        MovementComponent.ResetLandingFlags();
+        Component.StopCoyoteTimer();
+        Component.ResetLandingFlags();
     }
 
     public override void PhysicsProcess(double delta)
     {
-        MovementComponent.ApplyGravity(delta);
+        Component.ApplyGravity(delta);
 
-        Vector3 direction = MovementComponent.GetMovementDirectionFromInput();
+        Vector3 direction = Component.GetMovementDirectionFromInput();
         if (direction != Vector3.Zero)
-            MovementComponent.ApplyAirMovement(direction, delta);
+            Component.ApplyAirMovement(direction, delta);
         else
-            MovementComponent.RemoveAirMovement(delta);
-        MovementComponent.MoveAndSlide();
+            Component.RemoveAirMovement(delta);
+        Component.MoveAndSlide();
     }
 
     protected override void HandleTransitions()
     {
-        if (MovementComponent.CanJump())
+        if (Component.CanJump())
         {
             TransitionToState(MovementStateType.JumpState);
             return;
         }
 
-        if (!MovementComponent.IsOnFloor())
+        if (!Component.IsOnFloor())
             return;
 
-        if (MovementComponent.CanCrouch())
+        if (Component.CanCrouch())
         {
             TransitionToState(MovementStateType.CrouchState);
             return;
         }
 
-        if (MovementComponent.CanSprint())
+        if (Component.CanSprint())
         {
             TransitionToState(MovementStateType.SprintState);
             return;
         }
 
-        if (MovementComponent.CanWalk())
+        if (Component.CanWalk())
         {
             TransitionToState(MovementStateType.WalkState);
             return;
         }
 
-        if (MovementComponent.IsIdle())
+        if (Component.IsIdle())
         {
             TransitionToState(MovementStateType.IdleState);
             return;
