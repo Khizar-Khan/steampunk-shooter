@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions.state_machine.states;
 
 namespace SteampunkShooter.components.extensions.state_machine;
 
-public abstract partial class ComponentState<T> : State where T : Component
+public abstract partial class ComponentState<T, TE> : State where T : Component where TE : Enum
 {
     protected T Component { get; private set; }
 
@@ -16,7 +16,7 @@ public abstract partial class ComponentState<T> : State where T : Component
             throw new NullReferenceException($"StateMachine's component is not of type {typeof(T).Name}.");
     }
 
-    protected void TransitionToState<TE>(TE stateEnum) where TE : Enum
+    protected void TransitionToState(TE stateEnum)
     {
         StateMachineExtension.TransitionTo(stateEnum.ToString());
     }
