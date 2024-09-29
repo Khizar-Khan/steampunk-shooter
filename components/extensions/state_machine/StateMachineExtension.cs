@@ -12,9 +12,9 @@ public partial class StateMachineExtension : ComponentExtension
     private Dictionary<string, State> _states;
     private State _currentState;
 
-    public override void Initialise()
+    internal override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
         _states = new Dictionary<string, State>();
 
         InitialiseStates();
@@ -42,12 +42,12 @@ public partial class StateMachineExtension : ComponentExtension
         _currentState.Enter();
     }
 
-    public override void Process(double delta)
+    internal override void OnProcess(double delta)
     {
         _currentState.Process(delta);
     }
 
-    public override void PhysicsProcess(double delta)
+    internal override void OnPhysicsProcess(double delta)
     {
         _currentState.PhysicsProcess(delta);
     }

@@ -60,9 +60,9 @@ public partial class MovementComponent : Component
     private bool _isJumpRequested;
     private bool _isCrouchRequested;
 
-    protected override void Initialise()
+    protected override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
 
         _currentSpeed = _walkSpeed;
         _canStand = true;

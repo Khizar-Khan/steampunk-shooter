@@ -7,7 +7,7 @@ namespace SteampunkShooter.components;
 public abstract partial class Component : Node
 {
     private bool _isEnabled = true;
-    private List<ComponentExtension> _extensions;
+    private readonly List<ComponentExtension> _extensions = new();
 
     [Export]
     public bool IsEnabled
@@ -31,7 +31,7 @@ public abstract partial class Component : Node
         }
     }
 
-    public override async void _Ready()
+    public sealed override async void _Ready()
     {
         if (Owner == null)
         {
@@ -42,56 +42,44 @@ public abstract partial class Component : Node
 
         await ToSignal(Owner, "ready");
 
-        Initialise();
+        OnInitialise();
         InitialiseExtensions();
     }
 
     // Process method that only runs if the component is enabled
-    public override void _Process(double delta)
+    public sealed override void _Process(double delta)
     {
         if (!_isEnabled)
             return;
 
-        Process(delta);
-        foreach (ComponentExtension extension in _extensions)
-        {
-            if (extension.IsEnabled)
-            {
-                extension.Process(delta);
-            }
-        }
+        OnProcess(delta);
+        ProcessExtensions(delta);
     }
 
     // Physics Process method that only runs if the component is enabled
-    public override void _PhysicsProcess(double delta)
+    public sealed override void _PhysicsProcess(double delta)
     {
         if (!_isEnabled)
             return;
 
-        PhysicsProcess(delta);
-        foreach (ComponentExtension extension in _extensions)
-        {
-            if (extension.IsEnabled)
-            {
-                extension.PhysicsProcess(delta);
-            }
-        }
+        OnPhysicsProcess(delta);
+        PhysicsProcessExtensions(delta);
     }
 
     // Virtual method for initialisation logic, can be overridden by derived components
-    protected virtual void Initialise()
+    protected virtual void OnInitialise()
     {
-        _extensions = new List<ComponentExtension>();
+        // Initialisation logic for the component.
     }
 
     // Virtual method for per-frame processing, can be overridden by derived components
-    protected virtual void Process(double delta)
+    protected virtual void OnProcess(double delta)
     {
         // Default per-frame processing logic
     }
 
     // Virtual method for per-physics process processing, can be overridden by derived components
-    protected virtual void PhysicsProcess(double delta)
+    protected virtual void OnPhysicsProcess(double delta)
     {
         // Default per-physics process logic
     }
@@ -99,26 +87,48 @@ public abstract partial class Component : Node
     // Hook called when the component is enabled
     protected virtual void OnEnabled()
     {
-        // Logic to execute when the component is enabled
+        SetProcess(true);
+        SetPhysicsProcess(true);
     }
 
     // Hook called when the component is disabled
     protected virtual void OnDisabled()
     {
-        // Logic to execute when the component is disabled
+        SetProcess(false);
+        SetPhysicsProcess(false);
     }
 
     private void InitialiseExtensions()
     {
-        _extensions ??= new List<ComponentExtension>();
-
         foreach (Node node in GetChildren())
         {
             if (node is ComponentExtension componentExtension)
             {
                 componentExtension.SetParent(this);
-                componentExtension.Initialise();
+                componentExtension.OnInitialise();
                 _extensions.Add(componentExtension);
+            }
+        }
+    }
+
+    private void ProcessExtensions(double delta)
+    {
+        foreach (ComponentExtension extension in _extensions)
+        {
+            if (extension.IsEnabled)
+            {
+                extension.OnProcess(delta);
+            }
+        }
+    }
+
+    private void PhysicsProcessExtensions(double delta)
+    {
+        foreach (ComponentExtension extension in _extensions)
+        {
+            if (extension.IsEnabled)
+            {
+                extension.OnPhysicsProcess(delta);
             }
         }
     }

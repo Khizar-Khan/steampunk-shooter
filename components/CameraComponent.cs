@@ -22,9 +22,9 @@ public partial class CameraComponent : Component
     // Cached Values
     private Vector2 _inputDirection;
 
-    protected override void Initialise()
+    protected override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
 
         CharacterBody = Owner as CharacterBody3D ?? throw new NullReferenceException("CameraComponent's Owner is not of type CharacterBody3D or is null.");
         CameraContainer = GetNode<Node3D>(CameraContainerPath) ?? throw new NullReferenceException("CameraContainer not found.");

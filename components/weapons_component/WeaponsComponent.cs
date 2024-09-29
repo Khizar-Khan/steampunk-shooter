@@ -27,9 +27,9 @@ public partial class WeaponsComponent : Component
     public bool IsReloadRequested;
     public Vector2 MouseDelta;
 
-    protected override void Initialise()
+    protected override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
 
         if (_weaponDatabase == null || _weaponAttachmentPoint == null)
             throw new NullReferenceException("WeaponComponent is not fully initialized. Please ensure all references are set.");

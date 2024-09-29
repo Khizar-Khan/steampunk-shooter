@@ -43,7 +43,7 @@ public partial class InputComponent : Component
     [Signal]
     public delegate void WeaponReloadRequestedEventHandler();
 
-    protected override void Process(double delta)
+    protected override void OnProcess(double delta)
     {
         Vector2 inputDirection = Input.GetVector(MovementLeft, MovementRight, MovementForward, MovementBackward);
         EmitSignal(SignalName.MovementInput, inputDirection);

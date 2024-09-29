@@ -21,9 +21,9 @@ public partial class WeaponSwayExtension : ComponentExtension
     private Vector3 _initialPosition;
     private Vector3 _initialRotation;
 
-    public override void Initialise()
+    internal override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
 
         if (_swayNode == null)
         {
@@ -43,9 +43,9 @@ public partial class WeaponSwayExtension : ComponentExtension
         }
     }
 
-    public override void PhysicsProcess(double delta)
+    internal override void OnPhysicsProcess(double delta)
     {
-        base.PhysicsProcess(delta);
+        base.OnPhysicsProcess(delta);
         Sway((float)delta);
     }
 

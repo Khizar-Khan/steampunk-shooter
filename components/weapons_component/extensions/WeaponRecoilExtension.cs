@@ -21,9 +21,9 @@ public partial class WeaponRecoilExtension : ComponentExtension
     private Vector3 _recoilPositionOffset = Vector3.Zero;
     private Vector3 _recoilRotationOffset = Vector3.Zero;
     
-    public override void Initialise()
+    internal override void OnInitialise()
     {
-        base.Initialise();
+        base.OnInitialise();
 
         if (_recoilNode == null)
         {

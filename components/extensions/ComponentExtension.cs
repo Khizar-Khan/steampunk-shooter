@@ -31,25 +31,31 @@ public abstract partial class ComponentExtension : Node
         }
     }
 
-    public void SetParent(Component parentComponent)
+    protected internal void SetParent(Component parentComponent)
     {
+        if (ParentComponent != null)
+        {
+            GD.PrintErr("ParentComponent is already set.");
+            return;
+        }
+        
         ParentComponent = parentComponent ?? throw new ArgumentNullException(nameof(parentComponent));
     }
 
     // Virtual method for initialisation logic, can be overridden by derived component extensions
-    public virtual void Initialise()
+    internal virtual void OnInitialise()
     {
         // Default initialisation logic
     }
 
     // Virtual method for per-frame processing, can be overridden by derived component extensions
-    public virtual void Process(double delta)
+    internal virtual void OnProcess(double delta)
     {
         // Default per-frame processing logic
     }
 
     // Virtual method for per-physics process processing, can be overridden by derived component extensions
-    public virtual void PhysicsProcess(double delta)
+    internal virtual void OnPhysicsProcess(double delta)
     {
         // Default per-physics process logic
     }
@@ -57,12 +63,14 @@ public abstract partial class ComponentExtension : Node
     // Hook called when the component extension is enabled
     protected virtual void OnEnabled()
     {
-        // Logic to execute when the component extension is enabled
+        SetProcess(true);
+        SetPhysicsProcess(true);
     }
 
     // Hook called when the component extension is disabled
     protected virtual void OnDisabled()
     {
-        // Logic to execute when the component extension is disabled
+        SetProcess(false);
+        SetPhysicsProcess(false);
     }
 }
