@@ -13,7 +13,7 @@ public partial class RangedWeapon : Weapon
     private int _currentReserveSize;
     private int _currentMagazineSize;
     private Timer _fireRateTimer;
-    private Timer _reloadTimer;
+    public Timer ReloadTimer;
 
     public override void Initialise(WeaponData weaponData)
     {
@@ -32,12 +32,12 @@ public partial class RangedWeapon : Weapon
     private void InitialiseTimers(RangedWeaponData rangedWeaponData)
     {
         _fireRateTimer = GDUtil.CreateTimer(this, 1 / rangedWeaponData.FireRate);
-        _reloadTimer = GDUtil.CreateTimer(this, rangedWeaponData.ReloadTime, nameof(OnReloadTimerTimeout));
+        ReloadTimer = GDUtil.CreateTimer(this, rangedWeaponData.ReloadTime, nameof(OnReloadTimerTimeout));
     }
 
     public override void Attack()
     {
-        if (_currentMagazineSize > 0 && _fireRateTimer.IsStopped() && _reloadTimer.IsStopped())
+        if (_currentMagazineSize > 0 && _fireRateTimer.IsStopped() && ReloadTimer.IsStopped())
         {
             _currentMagazineSize--;
             _fireRateTimer.Start();
@@ -50,13 +50,15 @@ public partial class RangedWeapon : Weapon
         }
     }
     
+    public bool CanReload()
+    {
+        return ReloadTimer.IsStopped() && _rangedWeaponData.MaxMagazineSize != _currentMagazineSize;
+    }
+    
     public void Reload()
     {
-        if (_reloadTimer.IsStopped() && _rangedWeaponData.MaxMagazineSize != _currentMagazineSize)
-        {
-            _reloadTimer.Start();
-            GD.Print($"{Name} Reloading.");
-        }
+        ReloadTimer.Start();
+        GD.Print($"{Name} Reloading.");
     }
     
     // Signal Event Handlers

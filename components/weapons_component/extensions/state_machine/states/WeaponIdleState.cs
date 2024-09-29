@@ -1,5 +1,6 @@
 ﻿using Godot;
 using SteampunkShooter.components.extensions.state_machine;
+using SteampunkShooter.weapons;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
 
@@ -16,6 +17,17 @@ public partial class WeaponIdleState : ComponentState<WeaponsComponent, WeaponSt
         if (Component.IsAttackRequested)
         {
             TransitionToState(WeaponStates.AttackState);
+            return;
+        }
+        
+        if (Component.IsReloadRequested && (Component.CurrentWeapon as RangedWeapon).CanReload())
+        {
+            TransitionToState(WeaponStates.ReloadState);
+            Component.IsReloadRequested = false;
+        }
+        else
+        {
+            Component.IsReloadRequested = false;
         }
     }
 }
