@@ -8,9 +8,17 @@ public partial class WeaponEquipState : ComponentState<WeaponsComponent, WeaponS
     public override void Enter()
     {
         base.Enter();
-        Component.CurrentWeapon.Show();
         GD.Print("Weapon equipped");
-
+        
+        if (Component.SwitchToNextWeapon)
+            Component.EquipNextWeapon();
+        else if (Component.SwitchToPreviousWeapon)
+            Component.EquipPreviousWeapon();
+        
+        Component.SwitchToNextWeapon = false;
+        Component.SwitchToPreviousWeapon = false;
+        Component.CurrentWeapon.Show();
+        
         TransitionToState(WeaponStates.IdleState);
     }
 

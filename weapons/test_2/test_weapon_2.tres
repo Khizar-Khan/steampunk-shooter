@@ -7,13 +7,13 @@
 script = ExtResource("2_1l4sw")
 MaxReserveSize = 300
 MaxMagazineSize = 30
-FireRate = 1.0
+FireRate = 5.0
 ReloadTime = 2.5
 WeaponModelScene = ExtResource("1_khcqk")
 Position = Vector3(0.15, -0.15, -0.25)
 RotationDegrees = Vector3(0, 0, 0)
 Identification = &"test 2"
 WeaponActivationMode = 0
-WeaponCategory = 0
-Damage = 0
-Range = 0.0
+WeaponCategory = 1
+Damage = 10
+Range = 100.0

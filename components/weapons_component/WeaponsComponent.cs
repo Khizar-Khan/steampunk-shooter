@@ -27,6 +27,9 @@ public partial class WeaponsComponent : Component
     public bool IsReloadRequested;
     public Vector2 MouseDelta;
 
+    public bool SwitchToNextWeapon;
+    public bool SwitchToPreviousWeapon;
+
     protected override void OnInitialise()
     {
         base.OnInitialise();
@@ -134,9 +137,8 @@ public partial class WeaponsComponent : Component
         CurrentWeapon = _equippedWeapons[index];
         _switchWeaponTimer.Start();
     }
-    
-    // Signal Event Handlers
-    public void OnNextWeaponRequest()
+
+    public void EquipNextWeapon()
     {
         if (_equippedWeapons.Count == 0)
         {
@@ -150,18 +152,35 @@ public partial class WeaponsComponent : Component
         SwitchCurrentWeapon(nextIndex);
     }
     
-    public void OnPreviousWeaponRequest()
+    public void EquipPreviousWeapon()
     {
         if (_equippedWeapons.Count == 0)
         {
             GD.PrintErr("No weapons equipped.");
             return;
         }
-    
+        
         int currentIndex = CurrentWeapon == null ? 0 : _equippedWeapons.IndexOf(CurrentWeapon);
         int previousIndex = (currentIndex - 1 + _equippedWeapons.Count) % _equippedWeapons.Count;
-    
+        
         SwitchCurrentWeapon(previousIndex);
+    }
+    
+    // Signal Event Handlers
+    public void OnNextWeaponRequest()
+    {
+        if (!_switchWeaponTimer.IsStopped())
+            return;
+        
+        SwitchToNextWeapon = true;
+    }
+    
+    public void OnPreviousWeaponRequest()
+    {
+        if (!_switchWeaponTimer.IsStopped())
+            return;
+        
+        SwitchToPreviousWeapon = true;
     }
 
     public void OnWeaponAttackRequest(bool isRequested)
