@@ -11,10 +11,11 @@ public partial class WeaponAttackState : ComponentState<WeaponsComponent, Weapon
     {
         base.Enter();
         GD.Print("Weapon Attack");
-
+        
         if (Component.CurrentWeapon.WeaponData.WeaponActivationMode == WeaponData.ActivationMode.Single)
         {
             Component.CurrentWeapon.Attack();
+            Component.EmitSignal(nameof(Component.HasAttacked));
             Component.IsAttackRequested = false;
         }
     }
@@ -24,7 +25,10 @@ public partial class WeaponAttackState : ComponentState<WeaponsComponent, Weapon
         base.PhysicsProcess(delta);
 
         if (Component.IsAttackRequested && Component.CurrentWeapon.WeaponData.WeaponActivationMode == WeaponData.ActivationMode.Continuous)
+        {
             Component.CurrentWeapon.Attack();
+            Component.EmitSignal(nameof(Component.HasAttacked));
+        }
     }
 
     protected override void HandleTransitions()
