@@ -1,5 +1,6 @@
 ﻿using Godot;
 using SteampunkShooter.components.extensions.state_machine;
+using SteampunkShooter.weapons;
 using SteampunkShooter.weapons.data;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
@@ -28,6 +29,12 @@ public partial class WeaponAttackState : ComponentState<WeaponsComponent, Weapon
 
     protected override void HandleTransitions()
     {
+        if (Component.IsReloadRequested && (Component.CurrentWeapon as RangedWeapon).CanReload())
+        {
+            TransitionToState(WeaponStates.ReloadState);
+            return;
+        }
+        
         if (!Component.IsAttackRequested)
         {
             TransitionToState(WeaponStates.IdleState);

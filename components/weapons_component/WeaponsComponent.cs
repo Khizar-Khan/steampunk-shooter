@@ -17,18 +17,64 @@ public partial class WeaponsComponent : Component
     [Export] private int _maxWeaponCount = 3;
     [Export] private Array<StringName> _startingWeapons = new();
     [Export] private float _weaponSwitchCooldownTime = 0.25f;
+    [Export] private float _reloadBufferTime = 0.05f;
+    [Export] private float _weaponSwitchBufferTime = 0.05f;
 
     // Cached Values
     private Array<Weapon> _equippedWeapons;
     private Timer _switchWeaponTimer;
+    private bool _isReloadRequested;
+    private Timer _reloadBufferTimer;
+    private bool _isSwitchToNextWeaponRequested;
+    private Timer _switchToNextWeaponBufferTimer;
+    private bool _isSwitchToPreviousWeaponRequested;
+    private Timer _switchToPreviousWeaponBufferTimer;
     
     public Weapon CurrentWeapon { get; private set; }
-    public bool IsAttackRequested;
-    public bool IsReloadRequested;
     public Vector2 MouseDelta;
+    public bool IsAttackRequested;
+    public bool IsReloadRequested
+    {
+        get => _isReloadRequested;
+        set
+        {
+            if (_isReloadRequested == value)
+                return;
 
-    public bool SwitchToNextWeapon;
-    public bool SwitchToPreviousWeapon;
+            _isReloadRequested = value;
+            
+            if(_isReloadRequested)
+                _reloadBufferTimer.Start();
+        }
+    }
+    public bool IsSwitchToNextWeaponRequested
+    {
+        get => _isSwitchToNextWeaponRequested;
+        set
+        {
+            if (_isSwitchToNextWeaponRequested == value)
+                return;
+
+            _isSwitchToNextWeaponRequested = value;
+            
+            if(_isSwitchToNextWeaponRequested)
+                _switchToNextWeaponBufferTimer.Start();
+        }
+    }
+    public bool IsSwitchToPreviousWeaponRequested
+    {
+        get => _isSwitchToPreviousWeaponRequested;
+        set
+        {
+            if (_isSwitchToPreviousWeaponRequested == value)
+                return;
+
+            _isSwitchToPreviousWeaponRequested = value;
+            
+            if(_isSwitchToPreviousWeaponRequested)
+                _switchToPreviousWeaponBufferTimer.Start();
+        }
+    }
 
     protected override void OnInitialise()
     {
@@ -39,6 +85,9 @@ public partial class WeaponsComponent : Component
 
         _equippedWeapons = new Array<Weapon>();
         _switchWeaponTimer = GDUtil.CreateTimer(this, _weaponSwitchCooldownTime);
+        _reloadBufferTimer = GDUtil.CreateTimer(this, _reloadBufferTime, nameof(OnReloadBufferTimerTimeout));
+        _switchToNextWeaponBufferTimer = GDUtil.CreateTimer(this, _weaponSwitchBufferTime, nameof(OnNextWeaponBufferTimerTimeout));
+        _switchToPreviousWeaponBufferTimer = GDUtil.CreateTimer(this, _weaponSwitchBufferTime, nameof(OnPreviousWeaponBufferTimerTimeout));
 
         if (!(_startingWeapons.Count > 0))
         {
@@ -172,7 +221,7 @@ public partial class WeaponsComponent : Component
         if (!_switchWeaponTimer.IsStopped())
             return;
         
-        SwitchToNextWeapon = true;
+        IsSwitchToNextWeaponRequested = true;
     }
     
     public void OnPreviousWeaponRequest()
@@ -180,7 +229,7 @@ public partial class WeaponsComponent : Component
         if (!_switchWeaponTimer.IsStopped())
             return;
         
-        SwitchToPreviousWeapon = true;
+        IsSwitchToPreviousWeaponRequested = true;
     }
 
     public void OnWeaponAttackRequest(bool isRequested)
@@ -202,5 +251,25 @@ public partial class WeaponsComponent : Component
             return;
 
         MouseDelta = mouseDelta;
+    }
+
+    private void OnAttackBufferTimerTimeout()
+    {
+        IsAttackRequested = false;
+    }
+    
+    private void OnReloadBufferTimerTimeout()
+    {
+        IsReloadRequested = false;
+    }
+    
+    private void OnNextWeaponBufferTimerTimeout()
+    {
+        IsSwitchToNextWeaponRequested = false;
+    }
+    
+    private void OnPreviousWeaponBufferTimerTimeout()
+    {
+        IsSwitchToPreviousWeaponRequested = false;
     }
 }

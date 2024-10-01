@@ -10,13 +10,13 @@ public partial class WeaponEquipState : ComponentState<WeaponsComponent, WeaponS
         base.Enter();
         GD.Print("Weapon equipped");
         
-        if (Component.SwitchToNextWeapon)
+        if (Component.IsSwitchToNextWeaponRequested)
             Component.EquipNextWeapon();
-        else if (Component.SwitchToPreviousWeapon)
+        else if (Component.IsSwitchToPreviousWeaponRequested)
             Component.EquipPreviousWeapon();
         
-        Component.SwitchToNextWeapon = false;
-        Component.SwitchToPreviousWeapon = false;
+        Component.IsSwitchToNextWeaponRequested = false;
+        Component.IsSwitchToPreviousWeaponRequested = false;
         Component.CurrentWeapon.Show();
         
         TransitionToState(WeaponStates.IdleState);

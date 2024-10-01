@@ -14,7 +14,7 @@ public partial class WeaponIdleState : ComponentState<WeaponsComponent, WeaponSt
 
     protected override void HandleTransitions()
     {
-        if (Component.SwitchToNextWeapon || Component.SwitchToPreviousWeapon)
+        if (Component.IsSwitchToNextWeaponRequested || Component.IsSwitchToPreviousWeaponRequested)
         {
             TransitionToState(WeaponStates.UnequipState);
             return;
