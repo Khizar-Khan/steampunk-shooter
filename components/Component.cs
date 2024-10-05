@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using SteampunkShooter.components.extensions;
 
@@ -87,27 +88,24 @@ public abstract partial class Component : Node
     // Hook called when the component is enabled
     protected virtual void OnEnabled()
     {
-        SetProcess(true);
-        SetPhysicsProcess(true);
+        CallDeferred(nameof(SetProcess), true);
+        CallDeferred(nameof(SetPhysicsProcess), true);
     }
 
     // Hook called when the component is disabled
     protected virtual void OnDisabled()
     {
-        SetProcess(false);
-        SetPhysicsProcess(false);
+        CallDeferred(nameof(SetProcess), false);
+        CallDeferred(nameof(SetPhysicsProcess), false);
     }
 
     private void InitialiseExtensions()
     {
-        foreach (Node node in GetChildren())
+        foreach (ComponentExtension extension in GetChildren().OfType<ComponentExtension>())
         {
-            if (node is ComponentExtension componentExtension)
-            {
-                componentExtension.SetParent(this);
-                componentExtension.OnInitialise();
-                _extensions.Add(componentExtension);
-            }
+            extension.SetParent(this);
+            extension.OnInitialise();
+            _extensions.Add(extension);
         }
     }
 
