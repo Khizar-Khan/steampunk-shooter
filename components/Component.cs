@@ -11,7 +11,7 @@ public abstract partial class Component : Node
     private readonly List<ComponentExtension> _extensions = new();
 
     [Export]
-    public bool IsEnabled
+    internal bool IsEnabled
     {
         get => _isEnabled;
         set
@@ -20,15 +20,10 @@ public abstract partial class Component : Node
                 return;
 
             _isEnabled = value;
-
             if (_isEnabled)
-            {
                 OnEnabled();
-            }
             else
-            {
                 OnDisabled();
-            }
         }
     }
 
@@ -103,7 +98,6 @@ public abstract partial class Component : Node
     {
         foreach (ComponentExtension extension in GetChildren().OfType<ComponentExtension>())
         {
-            extension.SetParent(this);
             extension.OnInitialise();
             _extensions.Add(extension);
         }

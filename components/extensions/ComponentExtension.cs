@@ -1,16 +1,15 @@
-﻿using System;
-using Godot;
+﻿using Godot;
 
 namespace SteampunkShooter.components.extensions;
 
 public abstract partial class ComponentExtension : Node
 {
-    public Component ParentComponent { get; private set; }
+    protected internal Component ParentComponent => GetParent() as Component;
 
     private bool _isEnabled = true;
 
     [Export]
-    public bool IsEnabled
+    internal bool IsEnabled
     {
         get => _isEnabled;
         set
@@ -19,27 +18,11 @@ public abstract partial class ComponentExtension : Node
                 return;
 
             _isEnabled = value;
-
             if (_isEnabled)
-            {
                 OnEnabled();
-            }
             else
-            {
                 OnDisabled();
-            }
         }
-    }
-
-    protected internal void SetParent(Component parentComponent)
-    {
-        if (ParentComponent != null)
-        {
-            GD.PrintErr("ParentComponent is already set.");
-            return;
-        }
-        
-        ParentComponent = parentComponent ?? throw new ArgumentNullException(nameof(parentComponent));
     }
 
     // Virtual method for initialisation logic, can be overridden by derived component extensions
