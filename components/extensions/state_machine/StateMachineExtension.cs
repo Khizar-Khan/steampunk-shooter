@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -23,13 +24,10 @@ public partial class StateMachineExtension : ComponentExtension
 
     private void InitialiseStates()
     {
-        foreach (Node child in GetChildren())
+        foreach (State state in GetChildren().OfType<State>())
         {
-            if (child is not State state)
-                throw new InvalidCastException("Node is not a valid state.");
-
-            _states[child.Name] = state;
-            state.Initialise(this);
+            _states[state.Name] = state;
+            state.OnInitialise(this);
         }
     }
 
@@ -44,15 +42,15 @@ public partial class StateMachineExtension : ComponentExtension
 
     internal override void OnProcess(double delta)
     {
-        _currentState.Process(delta);
+        _currentState.OnProcess(delta);
     }
 
     internal override void OnPhysicsProcess(double delta)
     {
-        _currentState.PhysicsProcess(delta);
+        _currentState.OnPhysicsProcess(delta);
     }
 
-    public void TransitionTo(string key)
+    public void TransitionToState(string key)
     {
         if (!_states.ContainsKey(key) || _currentState == _states[key])
         {

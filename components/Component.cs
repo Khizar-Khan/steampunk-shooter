@@ -20,15 +20,10 @@ public abstract partial class Component : Node
                 return;
 
             _isEnabled = value;
-
             if (_isEnabled)
-            {
                 OnEnabled();
-            }
             else
-            {
                 OnDisabled();
-            }
         }
     }
 

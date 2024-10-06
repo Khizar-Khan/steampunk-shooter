@@ -1,36 +1,71 @@
 using System;
 using Godot;
+using Godot.Collections;
 
 namespace SteampunkShooter.components.extensions.state_machine;
 
 public abstract partial class State : Node
 {
-    protected StateMachineExtension StateMachineExtension { get; private set; }
+    protected StateMachineExtension StateMachine { get; private set; }
 
-    public virtual void Initialise(StateMachineExtension stateMachineExtension)
+    // Internal Attributes
+    private Dictionary<string, SubState> _subStates;
+    private SubState _currentSubState;
+
+    internal virtual void OnInitialise(StateMachineExtension stateMachineExtension)
     {
-        StateMachineExtension = stateMachineExtension ?? throw new ArgumentNullException(nameof(stateMachineExtension));
+        StateMachine = stateMachineExtension ?? throw new ArgumentNullException(nameof(stateMachineExtension));
+        _subStates = new Dictionary<string, SubState>();
+        
+        InitialiseSubStates();
+    }
+    
+    private void InitialiseSubStates()
+    {
+        foreach (Node child in GetChildren())
+        {
+            if (child is not SubState subState)
+                throw new InvalidCastException("Node is not a valid sub-state.");
+
+            _subStates[child.Name] = subState;
+            subState.OnInitialise(StateMachine, this);
+        }
     }
 
-    public virtual void Enter()
+    internal virtual void Enter()
     {
         // No Default Implementation
     }
 
-    public virtual void Exit()
+    internal virtual void Exit()
     {
-        // No Default Implementation
+        _currentSubState?.Exit();
+        _currentSubState = null;
     }
 
-    public virtual void Process(double delta)
+    internal virtual void OnProcess(double delta)
     {
-        HandleTransitions();
+        HandleStateTransitions();
+        _currentSubState?.OnProcess(delta);
     }
 
-    public virtual void PhysicsProcess(double delta)
+    internal virtual void OnPhysicsProcess(double delta)
     {
-        // No Default Implementation
+        _currentSubState?.OnPhysicsProcess(delta);
     }
 
-    protected abstract void HandleTransitions();
+    public void TransitionToSubState(string key)
+    {
+        if (!_subStates.ContainsKey(key) || _currentSubState == _subStates[key])
+        {
+            GD.PrintErr($"State '{key}' does not exist or is the current sub state. Current Sub State = '{_currentSubState.Name}'.");
+            return;
+        }
+
+        _currentSubState?.Exit();
+        _currentSubState = _subStates[key];
+        _currentSubState.Enter();
+    }
+
+    protected abstract void HandleStateTransitions();
 }

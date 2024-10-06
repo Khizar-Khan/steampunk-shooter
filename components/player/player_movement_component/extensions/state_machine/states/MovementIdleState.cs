@@ -4,7 +4,7 @@ namespace SteampunkShooter.components.movement_component.extensions.state_machin
 
 public partial class MovementIdleState : BaseState<PlayerMovementComponent, MovementStates>
 {
-    public override void PhysicsProcess(double delta)
+    internal override void OnPhysicsProcess(double delta)
     {
         Component.Crouch((float)delta, true);
 
@@ -15,7 +15,7 @@ public partial class MovementIdleState : BaseState<PlayerMovementComponent, Move
         Component.MoveAndSlide();
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         if (Component.CanCrouch())
         {

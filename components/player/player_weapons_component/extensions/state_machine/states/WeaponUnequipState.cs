@@ -5,7 +5,7 @@ namespace SteampunkShooter.components.weapons_component.extensions.state_machine
 
 public partial class WeaponUnequipState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         Component.CurrentWeapon.Hide();
@@ -14,7 +14,7 @@ public partial class WeaponUnequipState : BaseState<PlayerWeaponsComponent, Weap
         TransitionToState(WeaponStates.EquipState);
     }
     
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         // EMPTY
     }

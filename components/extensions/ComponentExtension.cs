@@ -19,15 +19,10 @@ public abstract partial class ComponentExtension : Node
                 return;
 
             _isEnabled = value;
-
             if (_isEnabled)
-            {
                 OnEnabled();
-            }
             else
-            {
                 OnDisabled();
-            }
         }
     }
 
@@ -35,7 +30,7 @@ public abstract partial class ComponentExtension : Node
     {
         if (ParentComponent != null)
             throw new InvalidOperationException("ParentComponent is already set.");
-        
+
         ParentComponent = parentComponent ?? throw new ArgumentNullException(nameof(parentComponent));
     }
 

@@ -5,7 +5,7 @@ namespace SteampunkShooter.components.weapons_component.extensions.state_machine
 
 public partial class WeaponEquipState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         GD.Print("Weapon equipped");
@@ -22,7 +22,7 @@ public partial class WeaponEquipState : BaseState<PlayerWeaponsComponent, Weapon
         TransitionToState(WeaponStates.IdleState);
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         // Equip state transitions automatically to Idle after entering
     }

@@ -1,0 +1,121 @@
+[gd_scene load_steps=23 format=3 uid="uid://pq0y3ha6pcao"]
+
+[ext_resource type="Script" path="res://entities/player/PlayerCharacterBody.cs" id="1_451hh"]
+[ext_resource type="Script" path="res://components/player/PlayerInputComponent.cs" id="2_tjxwf"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/PlayerMovementComponent.cs" id="3_p2ove"]
+[ext_resource type="Script" path="res://components/extensions/state_machine/StateMachineExtension.cs" id="4_6vld6"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementIdleState.cs" id="5_l2e5h"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementWalkState.cs" id="6_pg2w4"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementJumpState.cs" id="7_6j1fy"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementSprintState.cs" id="8_6txf6"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementFallingState.cs" id="9_nx2hw"]
+[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementCrouchState.cs" id="10_n5ro0"]
+[ext_resource type="Script" path="res://components/player/PlayerCameraComponent.cs" id="11_uc0hs"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/PlayerWeaponsComponent.cs" id="12_d2sik"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/state_machine/states/WeaponEquipState.cs" id="13_msrok"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/state_machine/states/WeaponIdleState.cs" id="14_h63p8"]
+[ext_resource type="Resource" uid="uid://53g3fe5nin7j" path="res://weapons/data/weapon_database.tres" id="14_s63e2"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/state_machine/states/WeaponAttackState.cs" id="15_fqnii"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/state_machine/states/WeaponReloadState.cs" id="16_lo31s"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/state_machine/states/WeaponUnequipState.cs" id="17_vuf1e"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/PlayerWeaponSwayExtension.cs" id="18_m63d6"]
+[ext_resource type="Script" path="res://components/player/player_weapons_component/extensions/PlayerWeaponRecoilExtension.cs" id="19_p6t8u"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qyhda"]
+radius = 0.25
+height = 1.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vs4au"]
+radius = 0.25
+
+[node name="PlayerCharacterBody" type="CharacterBody3D"]
+script = ExtResource("1_451hh")
+
+[node name="CameraContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+
+[node name="CameraController" type="Node3D" parent="CameraContainer"]
+
+[node name="Camera" type="Camera3D" parent="CameraContainer/CameraController"]
+
+[node name="WeaponHolder" type="Node3D" parent="CameraContainer/CameraController/Camera"]
+
+[node name="SwayNode" type="Node3D" parent="CameraContainer/CameraController/Camera/WeaponHolder"]
+
+[node name="RecoilNode" type="Node3D" parent="CameraContainer/CameraController/Camera/WeaponHolder/SwayNode"]
+
+[node name="WeaponAttachmentPoint" type="Node3D" parent="CameraContainer/CameraController/Camera/WeaponHolder/SwayNode/RecoilNode"]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_qyhda")
+
+[node name="OverheadShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("SphereShape3D_vs4au")
+target_position = Vector3(0, 0.75, 0)
+collide_with_areas = true
+
+[node name="PlayerInputComponent" type="Node" parent="."]
+script = ExtResource("2_tjxwf")
+
+[node name="PlayerMovementComponent" type="Node" parent="."]
+script = ExtResource("3_p2ove")
+
+[node name="MovementStateMachineExtension" type="Node" parent="PlayerMovementComponent"]
+script = ExtResource("4_6vld6")
+_initialStatePath = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("5_l2e5h")
+
+[node name="WalkState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("6_pg2w4")
+
+[node name="JumpState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("7_6j1fy")
+
+[node name="SprintState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("8_6txf6")
+
+[node name="FallingState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("9_nx2hw")
+
+[node name="CrouchState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
+script = ExtResource("10_n5ro0")
+
+[node name="PlayerCameraComponent" type="Node" parent="."]
+script = ExtResource("11_uc0hs")
+
+[node name="PlayerWeaponsComponent" type="Node" parent="." node_paths=PackedStringArray("_weaponAttachmentPoint")]
+script = ExtResource("12_d2sik")
+_weaponDatabase = ExtResource("14_s63e2")
+_weaponAttachmentPoint = NodePath("../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode/RecoilNode/WeaponAttachmentPoint")
+_startingWeapons = [&"test 1", &"test 2", &"test 3"]
+
+[node name="WeaponStateMachineExtension" type="Node" parent="PlayerWeaponsComponent"]
+script = ExtResource("4_6vld6")
+_initialStatePath = NodePath("EquipState")
+
+[node name="EquipState" type="Node" parent="PlayerWeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("13_msrok")
+
+[node name="IdleState" type="Node" parent="PlayerWeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("14_h63p8")
+
+[node name="AttackState" type="Node" parent="PlayerWeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("15_fqnii")
+
+[node name="ReloadState" type="Node" parent="PlayerWeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("16_lo31s")
+
+[node name="UnequipState" type="Node" parent="PlayerWeaponsComponent/WeaponStateMachineExtension"]
+script = ExtResource("17_vuf1e")
+
+[node name="WeaponSwayExtension" type="Node" parent="PlayerWeaponsComponent" node_paths=PackedStringArray("_swayNode")]
+script = ExtResource("18_m63d6")
+_swayNode = NodePath("../../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode")
+
+[node name="WeaponRecoilExtension" type="Node" parent="PlayerWeaponsComponent" node_paths=PackedStringArray("_recoilNode")]
+script = ExtResource("19_p6t8u")
+_recoilNode = NodePath("../../CameraContainer/CameraController/Camera/WeaponHolder/SwayNode/RecoilNode")

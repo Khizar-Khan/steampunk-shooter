@@ -8,7 +8,7 @@ public partial class WeaponReloadState : BaseState<PlayerWeaponsComponent, Weapo
 {
     private RangedWeapon _rangedWeapon;
     
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         GD.Print("Entering Reload State");
@@ -20,7 +20,7 @@ public partial class WeaponReloadState : BaseState<PlayerWeaponsComponent, Weapo
         }
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         if (_rangedWeapon.ReloadTimer.IsStopped())
         {

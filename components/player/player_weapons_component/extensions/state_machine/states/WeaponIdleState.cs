@@ -6,13 +6,13 @@ namespace SteampunkShooter.components.weapons_component.extensions.state_machine
 
 public partial class WeaponIdleState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         GD.Print("Weapon idle");
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         if (Component.IsSwitchToNextWeaponRequested || Component.IsSwitchToPreviousWeaponRequested)
         {

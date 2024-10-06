@@ -6,10 +6,10 @@ public abstract partial class BaseState<T, TE> : State where T : Component where
 {
     protected T Component { get; private set; }
 
-    public override void Initialise(StateMachineExtension stateMachineExtension)
+    internal override void OnInitialise(StateMachineExtension stateMachineExtension)
     {
-        base.Initialise(stateMachineExtension);
-        Component = StateMachineExtension.ParentComponent as T;
+        base.OnInitialise(stateMachineExtension);
+        Component = StateMachine.ParentComponent as T;
 
         if (Component == null)
             throw new NullReferenceException($"StateMachine's component is not of type {typeof(T).Name}.");
@@ -17,6 +17,6 @@ public abstract partial class BaseState<T, TE> : State where T : Component where
 
     protected void TransitionToState(TE stateEnum)
     {
-        StateMachineExtension.TransitionTo(stateEnum.ToString());
+        StateMachine.TransitionToState(stateEnum.ToString());
     }
 }

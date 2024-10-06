@@ -5,13 +5,13 @@ namespace SteampunkShooter.components.movement_component.extensions.state_machin
 
 public partial class MovementJumpState : BaseState<PlayerMovementComponent, MovementStates>
 {
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         Component.Jump();
     }
 
-    public override void PhysicsProcess(double delta)
+    internal override void OnPhysicsProcess(double delta)
     {
         Component.Crouch((float)delta, true);
         Component.ApplyGravity(delta);
@@ -24,7 +24,7 @@ public partial class MovementJumpState : BaseState<PlayerMovementComponent, Move
         Component.MoveAndSlide();
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         if (Component.IsFalling())
         {

@@ -7,7 +7,7 @@ namespace SteampunkShooter.components.weapons_component.extensions.state_machine
 
 public partial class WeaponAttackState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
-    public override void Enter()
+    internal override void Enter()
     {
         base.Enter();
         GD.Print("Weapon Attack");
@@ -20,9 +20,9 @@ public partial class WeaponAttackState : BaseState<PlayerWeaponsComponent, Weapo
         }
     }
 
-    public override void PhysicsProcess(double delta)
+    internal override void OnPhysicsProcess(double delta)
     {
-        base.PhysicsProcess(delta);
+        base.OnPhysicsProcess(delta);
 
         if (Component.IsAttackRequested && Component.CurrentWeapon.WeaponData.WeaponActivationMode == WeaponData.ActivationMode.Continuous)
         {
@@ -31,7 +31,7 @@ public partial class WeaponAttackState : BaseState<PlayerWeaponsComponent, Weapo
         }
     }
 
-    protected override void HandleTransitions()
+    protected override void HandleStateTransitions()
     {
         if (Component.IsReloadRequested && (Component.CurrentWeapon as RangedWeapon).CanReload())
         {
