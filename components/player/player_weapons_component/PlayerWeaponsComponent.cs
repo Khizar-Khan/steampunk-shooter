@@ -9,9 +9,6 @@ namespace SteampunkShooter.components.weapons_component;
 
 public partial class PlayerWeaponsComponent : Component
 {
-    [Signal]
-    public delegate void HasAttackedEventHandler();
-    
     [ExportCategory("References")]
     [Export] private WeaponDatabase _weaponDatabase;
     [Export] private Node3D _weaponAttachmentPoint;

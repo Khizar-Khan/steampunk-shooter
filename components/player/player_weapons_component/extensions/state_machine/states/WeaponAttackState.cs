@@ -15,7 +15,7 @@ public partial class WeaponAttackState : BaseState<PlayerWeaponsComponent, Weapo
         if (Component.CurrentWeapon.WeaponData.WeaponActivationMode == WeaponData.ActivationMode.Single)
         {
             Component.CurrentWeapon.Attack();
-            Component.EmitSignal(nameof(Component.HasAttacked));
+            SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerHasAttacked));
             Component.IsAttackRequested = false;
         }
     }
@@ -27,7 +27,7 @@ public partial class WeaponAttackState : BaseState<PlayerWeaponsComponent, Weapo
         if (Component.IsAttackRequested && Component.CurrentWeapon.WeaponData.WeaponActivationMode == WeaponData.ActivationMode.Continuous)
         {
             Component.CurrentWeapon.Attack();
-            Component.EmitSignal(nameof(Component.HasAttacked));
+            SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerHasAttacked));
         }
     }
 

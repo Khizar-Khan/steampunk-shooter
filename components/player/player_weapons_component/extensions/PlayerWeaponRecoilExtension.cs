@@ -44,7 +44,7 @@ public partial class PlayerWeaponRecoilExtension : ComponentExtension
             return;
         }
 
-        _playerWeaponsComponent.Connect(PlayerWeaponsComponent.SignalName.HasAttacked, new Callable(this, nameof(OnHasAttacked)));
+        SignalBus.Instance.Connect(nameof(SignalBus.Instance.PlayerHasAttacked), new Callable(this, nameof(OnHasAttacked)));
     }
     
     internal override void OnPhysicsProcess(double delta)

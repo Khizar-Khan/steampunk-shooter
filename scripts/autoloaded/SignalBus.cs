@@ -37,6 +37,9 @@ public partial class SignalBus : Node
     
     [Signal]
     public delegate void PlayerAdjustHeightRequestedEventHandler(float targetHeight, float lerpSpeed, float delta);
+    
+    [Signal]
+    public delegate void PlayerHasAttackedEventHandler();
     # endregion
     
     public override void _Ready()
