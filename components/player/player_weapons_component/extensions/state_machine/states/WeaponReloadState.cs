@@ -4,7 +4,7 @@ using SteampunkShooter.weapons;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
 
-public partial class WeaponReloadState : ComponentState<WeaponsComponent, WeaponStates>
+public partial class WeaponReloadState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
     private RangedWeapon _rangedWeapon;
     

@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
 
-public partial class WeaponEquipState : ComponentState<WeaponsComponent, WeaponStates>
+public partial class WeaponEquipState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
     public override void Enter()
     {

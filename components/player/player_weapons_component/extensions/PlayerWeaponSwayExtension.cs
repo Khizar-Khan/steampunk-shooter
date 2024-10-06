@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.components.weapons_component.extensions;
 
-public partial class WeaponSwayExtension : ComponentExtension
+public partial class PlayerWeaponSwayExtension : ComponentExtension
 {
     [ExportCategory("References")]
     [Export] private Node3D _swayNode;
@@ -17,7 +17,7 @@ public partial class WeaponSwayExtension : ComponentExtension
     [Export] private float _rotationAmount = 15.0f;
 
     // Internal Attributes
-    private WeaponsComponent _weaponsComponent;
+    private PlayerWeaponsComponent _playerWeaponsComponent;
     private Vector3 _initialPosition;
     private Vector3 _initialRotation;
 
@@ -35,8 +35,8 @@ public partial class WeaponSwayExtension : ComponentExtension
         _initialPosition = _swayNode.Position;
         _initialRotation = _swayNode.RotationDegrees;
 
-        _weaponsComponent = ParentComponent as WeaponsComponent;
-        if (_weaponsComponent == null)
+        _playerWeaponsComponent = ParentComponent as PlayerWeaponsComponent;
+        if (_playerWeaponsComponent == null)
         {
             GD.PrintErr("WeaponSwayExtension: _weaponsComponent is null.");
             IsEnabled = false;
@@ -52,28 +52,28 @@ public partial class WeaponSwayExtension : ComponentExtension
     private void Sway(float delta)
     {
         // Clamp mouse movement
-        _weaponsComponent.MouseDelta = new Vector2(
-            Mathf.Clamp(_weaponsComponent.MouseDelta.X, _minimum.X, _maximum.X),
-            Mathf.Clamp(_weaponsComponent.MouseDelta.Y, _minimum.Y, _maximum.Y)
+        _playerWeaponsComponent.MouseDelta = new Vector2(
+            Mathf.Clamp(_playerWeaponsComponent.MouseDelta.X, _minimum.X, _maximum.X),
+            Mathf.Clamp(_playerWeaponsComponent.MouseDelta.Y, _minimum.Y, _maximum.Y)
         );
 
         // Calculate new weapon position based on mouse movement
         Vector3 newPosition = _swayNode.Position;
-        newPosition.X = Mathf.Lerp(_swayNode.Position.X, _initialPosition.X - (_weaponsComponent.MouseDelta.X * _positionAmount) * delta, _positionSpeed);
-        newPosition.Y = Mathf.Lerp(_swayNode.Position.Y, _initialPosition.Y + (_weaponsComponent.MouseDelta.Y * _positionAmount) * delta, _positionSpeed);
+        newPosition.X = Mathf.Lerp(_swayNode.Position.X, _initialPosition.X - (_playerWeaponsComponent.MouseDelta.X * _positionAmount) * delta, _positionSpeed);
+        newPosition.Y = Mathf.Lerp(_swayNode.Position.Y, _initialPosition.Y + (_playerWeaponsComponent.MouseDelta.Y * _positionAmount) * delta, _positionSpeed);
 
         // Update the weapon position
         _swayNode.Position = newPosition;
 
         // Calculate new weapon rotation based on mouse movement
         Vector3 newRotationDegrees = _swayNode.RotationDegrees;
-        newRotationDegrees.Y = Mathf.Lerp(_swayNode.RotationDegrees.Y, _initialRotation.Y + (_weaponsComponent.MouseDelta.X * -_rotationAmount) * delta, _rotationSpeed);
-        newRotationDegrees.X = Mathf.Lerp(_swayNode.RotationDegrees.X, _initialRotation.X - (_weaponsComponent.MouseDelta.Y * _rotationAmount) * delta, _rotationSpeed);
+        newRotationDegrees.Y = Mathf.Lerp(_swayNode.RotationDegrees.Y, _initialRotation.Y + (_playerWeaponsComponent.MouseDelta.X * -_rotationAmount) * delta, _rotationSpeed);
+        newRotationDegrees.X = Mathf.Lerp(_swayNode.RotationDegrees.X, _initialRotation.X - (_playerWeaponsComponent.MouseDelta.Y * _rotationAmount) * delta, _rotationSpeed);
         
         // Update the weapon rotation
         _swayNode.RotationDegrees = newRotationDegrees;
         
         // Reset Mouse Delta
-        _weaponsComponent.MouseDelta = Vector2.Zero;
+        _playerWeaponsComponent.MouseDelta = Vector2.Zero;
     }
 }

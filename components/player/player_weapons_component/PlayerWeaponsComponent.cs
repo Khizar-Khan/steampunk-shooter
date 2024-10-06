@@ -7,7 +7,7 @@ using SteampunkShooter.weapons.data;
 
 namespace SteampunkShooter.components.weapons_component;
 
-public partial class WeaponsComponent : Component
+public partial class PlayerWeaponsComponent : Component
 {
     [Signal]
     public delegate void HasAttackedEventHandler();

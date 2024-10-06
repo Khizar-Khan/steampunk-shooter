@@ -11,13 +11,10 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private const string OverheadShapeCastPath = "OverheadShapeCast";
     private const string CollisionShapePath = "CollisionShape";
     private const string CameraContainerPath = "CameraContainer";
-    private const string InputComponentPath = "InputComponent";
-    private const string MovementComponentPath = "MovementComponent";
-    private const string CameraComponentPath = "CameraComponent";
-    private const string WeaponsComponentPath = "WeaponsComponent";
-
-    [Signal]
-    public delegate void ObstructionAboveEventHandler(bool isObstructionAbove);
+    private const string PlayerInputComponentPath = "PlayerInputComponent";
+    private const string PlayerMovementComponentPath = "PlayerMovementComponent";
+    private const string PlayerCameraComponentPath = "PlayerCameraComponent";
+    private const string PlayerWeaponsComponentPath = "PlayerWeaponsComponent";
 
     // References
     private ShapeCast3D _overheadShapeCast;
@@ -25,10 +22,10 @@ public partial class PlayerCharacterBody : CharacterBody3D
     private Node3D _cameraContainer;
 
     // Components
-    private InputComponent _inputComponent;
-    private MovementComponent _movementComponent;
-    private CameraComponent _cameraComponent;
-    private WeaponsComponent _weaponsComponent;
+    private PlayerInputComponent _playerInputComponent;
+    private PlayerMovementComponent _movementPlayerMovementComponent;
+    private PlayerCameraComponent _playerCameraComponent;
+    private PlayerWeaponsComponent _playerWeaponsComponent;
 
     // Cached Values
     private Transform3D _originalCameraContainerTransform;
@@ -60,10 +57,10 @@ public partial class PlayerCharacterBody : CharacterBody3D
 
     private void InitialiseComponents()
     {
-        _inputComponent = GetNode<InputComponent>(InputComponentPath) ?? throw new NullReferenceException("InputComponent not found.");
-        _movementComponent = GetNode<MovementComponent>(MovementComponentPath) ?? throw new NullReferenceException("MovementComponent not found.");
-        _cameraComponent = GetNode<CameraComponent>(CameraComponentPath) ?? throw new NullReferenceException("CameraComponent not found.");
-        _weaponsComponent = GetNode<WeaponsComponent>(WeaponsComponentPath) ?? throw new NullReferenceException("WeaponsComponent not found.");
+        _playerInputComponent = GetNode<PlayerInputComponent>(PlayerInputComponentPath) ?? throw new NullReferenceException("InputComponent not found.");
+        _movementPlayerMovementComponent = GetNode<PlayerMovementComponent>(PlayerMovementComponentPath) ?? throw new NullReferenceException("MovementComponent not found.");
+        _playerCameraComponent = GetNode<PlayerCameraComponent>(PlayerCameraComponentPath) ?? throw new NullReferenceException("CameraComponent not found.");
+        _playerWeaponsComponent = GetNode<PlayerWeaponsComponent>(PlayerWeaponsComponentPath) ?? throw new NullReferenceException("WeaponsComponent not found.");
     }
 
     private void CacheValues()
@@ -83,69 +80,69 @@ public partial class PlayerCharacterBody : CharacterBody3D
 
     private void ConnectSignals()
     {
-        _inputComponent.Connect(
-            nameof(InputComponent.MovementInput),
-            new Callable(_movementComponent, nameof(MovementComponent.OnMovementInput))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerMovementInput),
+            new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnMovementInput))
         );
 
-        _inputComponent.Connect(
-            nameof(InputComponent.SprintRequested),
-            new Callable(_movementComponent, nameof(MovementComponent.OnSprintRequested))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerSprintRequested),
+            new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnSprintRequested))
         );
 
-        _inputComponent.Connect(
-            nameof(InputComponent.JumpRequested),
-            new Callable(_movementComponent, nameof(MovementComponent.OnJumpRequested))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerJumpRequested),
+            new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnJumpRequested))
         );
 
-        _inputComponent.Connect(
-            nameof(InputComponent.CrouchRequested),
-            new Callable(_movementComponent, nameof(MovementComponent.OnCrouchRequested))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerCrouchRequested),
+            new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnCrouchRequested))
         );
 
-        _movementComponent.Connect(
-            nameof(MovementComponent.AdjustHeightRequested),
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerAdjustHeightRequested),
             new Callable(this, nameof(AdjustHeight))
         );
 
-        Connect(
-            nameof(ObstructionAbove),
-            new Callable(_movementComponent, nameof(MovementComponent.OnObstructionAbove))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerObstructionAbove),
+            new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnObstructionAbove))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.MouseMoved,
-            new Callable(_cameraComponent, nameof(CameraComponent.OnMouseMotion))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerMouseMoved),
+            new Callable(_playerCameraComponent, nameof(PlayerCameraComponent.OnMouseMotion))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.MovementInput,
-            new Callable(_cameraComponent, nameof(CameraComponent.OnMovementInput))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerMovementInput),
+            new Callable(_playerCameraComponent, nameof(PlayerCameraComponent.OnMovementInput))
         );
 
-        _inputComponent.Connect(
-            InputComponent.SignalName.NextWeaponRequested,
-            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnNextWeaponRequest))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerNextWeaponRequested),
+            new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnNextWeaponRequest))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.PreviousWeaponRequested,
-            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnPreviousWeaponRequest))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerPreviousWeaponRequested),
+            new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnPreviousWeaponRequest))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.WeaponAttackRequested,
-            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponAttackRequest))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerWeaponAttackRequested),
+            new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnWeaponAttackRequest))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.WeaponReloadRequested,
-            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnWeaponReloadRequest))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerWeaponReloadRequested),
+            new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnWeaponReloadRequest))
         );
         
-        _inputComponent.Connect(
-            InputComponent.SignalName.MouseMoved,
-            new Callable(_weaponsComponent, nameof(WeaponsComponent.OnMouseMotion))
+        SignalBus.Instance.Connect(
+            nameof(SignalBus.Instance.PlayerMouseMoved),
+            new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnMouseMotion))
         );
     }
 
@@ -155,7 +152,7 @@ public partial class PlayerCharacterBody : CharacterBody3D
             return;
 
         _isObstructionAbove = _overheadShapeCast.IsColliding();
-        EmitSignal(SignalName.ObstructionAbove, _isObstructionAbove);
+        SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerObstructionAbove), _isObstructionAbove);
     }
 
     public void AdjustHeight(float targetHeight, float lerpSpeed, float threshold, float delta)

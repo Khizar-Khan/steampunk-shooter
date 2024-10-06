@@ -15,6 +15,10 @@ run/main_scene="res://stages/test_stage.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SignalBus="*res://scripts/autoloaded/SignalBus.cs"
+
 [dotnet]
 
 project/assembly_name="Steampunk Shooter"

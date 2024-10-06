@@ -2,8 +2,14 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementIdleState : ComponentState<MovementComponent, MovementStates>
+public partial class MovementWalkState : BaseState<PlayerMovementComponent, MovementStates>
 {
+    public override void Enter()
+    {
+        base.Enter();
+        Component.SetSpeed(PlayerMovementComponent.SpeedType.Walk);
+    }
+
     public override void PhysicsProcess(double delta)
     {
         Component.Crouch((float)delta, true);
@@ -11,7 +17,7 @@ public partial class MovementIdleState : ComponentState<MovementComponent, Movem
         if (!Component.IsOnFloor())
             Component.ApplyGravity(delta);
 
-        Component.RemoveMovement(delta);
+        Component.ApplyMovement(Component.GetMovementDirectionFromInput(), delta);
         Component.MoveAndSlide();
     }
 
@@ -36,8 +42,15 @@ public partial class MovementIdleState : ComponentState<MovementComponent, Movem
         }
 
         if (Component.IsIdle())
+        {
+            TransitionToState(MovementStates.IdleState);
             return;
+        }
 
-        TransitionToState(Component.CanSprint() ? MovementStates.SprintState : MovementStates.WalkState);
+        if (Component.CanSprint())
+        {
+            TransitionToState(MovementStates.SprintState);
+            return;
+        }
     }
 }

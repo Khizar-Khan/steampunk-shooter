@@ -4,7 +4,7 @@ using SteampunkShooter.weapons;
 
 namespace SteampunkShooter.components.weapons_component.extensions.state_machine.states;
 
-public partial class WeaponIdleState : ComponentState<WeaponsComponent, WeaponStates>
+public partial class WeaponIdleState : BaseState<PlayerWeaponsComponent, WeaponStates>
 {
     public override void Enter()
     {

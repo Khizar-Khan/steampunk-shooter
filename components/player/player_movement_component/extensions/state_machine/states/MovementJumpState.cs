@@ -1,25 +1,19 @@
-﻿using Godot;
+using Godot;
 using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementFallingState : ComponentState<MovementComponent, MovementStates>
+public partial class MovementJumpState : BaseState<PlayerMovementComponent, MovementStates>
 {
     public override void Enter()
     {
         base.Enter();
-        Component.StartCoyoteTimer();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
-        Component.StopCoyoteTimer();
-        Component.ResetLandingFlags();
+        Component.Jump();
     }
 
     public override void PhysicsProcess(double delta)
     {
+        Component.Crouch((float)delta, true);
         Component.ApplyGravity(delta);
 
         Vector3 direction = Component.GetMovementDirectionFromInput();
@@ -32,20 +26,14 @@ public partial class MovementFallingState : ComponentState<MovementComponent, Mo
 
     protected override void HandleTransitions()
     {
-        if (Component.CanJump())
+        if (Component.IsFalling())
         {
-            TransitionToState(MovementStates.JumpState);
+            TransitionToState(MovementStates.FallingState);
             return;
         }
 
         if (!Component.IsOnFloor())
             return;
-
-        if (Component.CanCrouch())
-        {
-            TransitionToState(MovementStates.CrouchState);
-            return;
-        }
 
         if (Component.CanSprint())
         {

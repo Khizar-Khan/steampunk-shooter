@@ -5,7 +5,7 @@ using SteampunkShooter.utility;
 
 namespace SteampunkShooter.components;
 
-public partial class MovementComponent : Component
+public partial class PlayerMovementComponent : Component
 {
     public enum SpeedType
     {
@@ -13,9 +13,6 @@ public partial class MovementComponent : Component
         Sprint,
         Crouch
     }
-    
-    [Signal]
-    public delegate void AdjustHeightRequestedEventHandler(float targetHeight, float lerpSpeed, float delta);
     
     [ExportCategory("Movement Settings")]
     [Export] private float _walkSpeed = 3.0f; // Movement speed while walking.
@@ -145,7 +142,7 @@ public partial class MovementComponent : Component
     public void Crouch(float delta, bool isStanding = false)
     {
         float targetHeight = isStanding ? GetStandHeight() : _crouchHeight;
-        EmitSignal(nameof(AdjustHeightRequested), targetHeight, _crouchTransitionSpeed, _crouchTransitionThreshold, delta);
+        SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerAdjustHeightRequested), targetHeight, _crouchTransitionSpeed, _crouchTransitionThreshold, delta);
     }
 
     public void MoveAndSlide()

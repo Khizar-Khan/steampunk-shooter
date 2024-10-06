@@ -2,12 +2,12 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementWalkState : ComponentState<MovementComponent, MovementStates>
+public partial class MovementSprintState : BaseState<PlayerMovementComponent, MovementStates>
 {
     public override void Enter()
     {
         base.Enter();
-        Component.SetSpeed(MovementComponent.SpeedType.Walk);
+        Component.SetSpeed(PlayerMovementComponent.SpeedType.Sprint);
     }
 
     public override void PhysicsProcess(double delta)
@@ -41,15 +41,18 @@ public partial class MovementWalkState : ComponentState<MovementComponent, Movem
             return;
         }
 
-        if (Component.IsIdle())
+        if (Component.CanSprint())
+            return;
+
+        if (Component.CanWalk())
         {
-            TransitionToState(MovementStates.IdleState);
+            TransitionToState(MovementStates.WalkState);
             return;
         }
 
-        if (Component.CanSprint())
+        if (Component.IsIdle())
         {
-            TransitionToState(MovementStates.SprintState);
+            TransitionToState(MovementStates.IdleState);
             return;
         }
     }

@@ -2,7 +2,7 @@
 
 namespace SteampunkShooter.components.extensions.state_machine;
 
-public abstract partial class ComponentState<T, TE> : State where T : Component where TE : Enum
+public abstract partial class BaseState<T, TE> : State where T : Component where TE : Enum
 {
     protected T Component { get; private set; }
 

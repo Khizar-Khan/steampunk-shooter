@@ -3,12 +3,12 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementCrouchState : ComponentState<MovementComponent, MovementStates>
+public partial class MovementCrouchState : BaseState<PlayerMovementComponent, MovementStates>
 {
     public override void Enter()
     {
         base.Enter();
-        Component.SetSpeed(MovementComponent.SpeedType.Crouch);
+        Component.SetSpeed(PlayerMovementComponent.SpeedType.Crouch);
     }
 
     public override void PhysicsProcess(double delta)

@@ -3,7 +3,7 @@ using Godot;
 
 namespace SteampunkShooter.components;
 
-public partial class CameraComponent : Component
+public partial class PlayerCameraComponent : Component
 {
     // Constant Node Paths
     private const string CameraControllerPath = "../CameraContainer/CameraController";

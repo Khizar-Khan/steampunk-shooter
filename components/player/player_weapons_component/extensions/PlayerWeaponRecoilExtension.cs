@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions;
 
 namespace SteampunkShooter.components.weapons_component.extensions;
 
-public partial class WeaponRecoilExtension : ComponentExtension
+public partial class PlayerWeaponRecoilExtension : ComponentExtension
 {
     [ExportCategory("References")]
     [Export] private Node3D _recoilNode;
@@ -15,7 +15,7 @@ public partial class WeaponRecoilExtension : ComponentExtension
     [Export] private float _rotationRecoverySpeed = 60f;
 
     // Internal Attributes
-    private WeaponsComponent _weaponsComponent;
+    private PlayerWeaponsComponent _playerWeaponsComponent;
     private Vector3 _initialPosition;
     private Vector3 _initialRotation;
 
@@ -36,15 +36,15 @@ public partial class WeaponRecoilExtension : ComponentExtension
         _initialPosition = _recoilNode.Position;
         _initialRotation = _recoilNode.RotationDegrees;
 
-        _weaponsComponent = ParentComponent as WeaponsComponent;
-        if (_weaponsComponent == null)
+        _playerWeaponsComponent = ParentComponent as PlayerWeaponsComponent;
+        if (_playerWeaponsComponent == null)
         {
             GD.PrintErr("WeaponRecoilExtension: _weaponsComponent is null.");
             IsEnabled = false;
             return;
         }
 
-        _weaponsComponent.Connect(WeaponsComponent.SignalName.HasAttacked, new Callable(this, nameof(OnHasAttacked)));
+        _playerWeaponsComponent.Connect(PlayerWeaponsComponent.SignalName.HasAttacked, new Callable(this, nameof(OnHasAttacked)));
     }
     
     internal override void OnPhysicsProcess(double delta)

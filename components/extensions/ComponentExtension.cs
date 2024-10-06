@@ -34,10 +34,7 @@ public abstract partial class ComponentExtension : Node
     protected internal void SetParent(Component parentComponent)
     {
         if (ParentComponent != null)
-        {
-            GD.PrintErr("ParentComponent is already set.");
-            return;
-        }
+            throw new InvalidOperationException("ParentComponent is already set.");
         
         ParentComponent = parentComponent ?? throw new ArgumentNullException(nameof(parentComponent));
     }

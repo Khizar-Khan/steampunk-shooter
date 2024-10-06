@@ -2,7 +2,7 @@ using Godot;
 
 namespace SteampunkShooter.components;
 
-public partial class InputComponent : Component
+public partial class PlayerInputComponent : Component
 {
     private const string MovementForward = "move_forward";
     private const string MovementBackward = "move_backward";
@@ -16,37 +16,10 @@ public partial class InputComponent : Component
     private const string WeaponAttack = "attack";
     private const string WeaponReload = "reload";
 
-    [Signal]
-    public delegate void MovementInputEventHandler(Vector2 inputDirection);
-
-    [Signal]
-    public delegate void SprintRequestedEventHandler(bool isRequested);
-
-    [Signal]
-    public delegate void JumpRequestedEventHandler();
-
-    [Signal]
-    public delegate void CrouchRequestedEventHandler(bool isRequested);
-
-    [Signal]
-    public delegate void MouseMovedEventHandler(Vector2 mouseDelta);
-    
-    [Signal]
-    public delegate void NextWeaponRequestedEventHandler();
-    
-    [Signal]
-    public delegate void PreviousWeaponRequestedEventHandler();
-    
-    [Signal]
-    public delegate void WeaponAttackRequestedEventHandler(bool isRequested);
-    
-    [Signal]
-    public delegate void WeaponReloadRequestedEventHandler();
-
     protected override void OnProcess(double delta)
     {
         Vector2 inputDirection = Input.GetVector(MovementLeft, MovementRight, MovementForward, MovementBackward);
-        EmitSignal(SignalName.MovementInput, inputDirection);
+        SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerMovementInput), inputDirection);
     }
 
     public override void _Input(InputEvent @event)
@@ -57,35 +30,35 @@ public partial class InputComponent : Component
         switch (@event)
         {
             case InputEventKey inputKeyEvent when inputKeyEvent.IsAction(MovementSprint):
-                EmitSignal(SignalName.SprintRequested, inputKeyEvent.IsPressed());
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerSprintRequested), inputKeyEvent.IsPressed());
                 break;
 
             case InputEventKey inputKeyEvent when inputKeyEvent.IsActionPressed(MovementJump):
-                EmitSignal(SignalName.JumpRequested);
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerJumpRequested));
                 break;
 
             case InputEventKey inputKeyEvent when inputKeyEvent.IsAction(MovementCrouch):
-                EmitSignal(SignalName.CrouchRequested, inputKeyEvent.IsPressed());
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerCrouchRequested), inputKeyEvent.IsPressed());
                 break;
-            
+
             case InputEventKey inputKeyEvent when inputKeyEvent.IsActionPressed(WeaponReload):
-                EmitSignal(SignalName.WeaponReloadRequested);
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerWeaponReloadRequested));
                 break;
 
             case InputEventMouseMotion mouseMotionEvent:
-                EmitSignal(SignalName.MouseMoved, mouseMotionEvent.Relative);
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerMouseMoved), mouseMotionEvent.Relative);
                 break;
 
             case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsActionPressed(WeaponNext):
-                EmitSignal(SignalName.NextWeaponRequested);
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerNextWeaponRequested));
                 break;
 
             case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsActionPressed(WeaponPrevious):
-                EmitSignal(SignalName.PreviousWeaponRequested);
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerPreviousWeaponRequested));
                 break;
-            
+
             case InputEventMouseButton mouseButtonEvent when mouseButtonEvent.IsAction(WeaponAttack):
-                EmitSignal(SignalName.WeaponAttackRequested, mouseButtonEvent.IsPressed());
+                SignalBus.Instance.EmitSignal(nameof(SignalBus.Instance.PlayerWeaponAttackRequested), mouseButtonEvent.IsPressed());
                 break;
         }
     }
