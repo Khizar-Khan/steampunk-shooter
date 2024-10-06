@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bky6r3ymrquj"]
 
 [ext_resource type="Material" uid="uid://bgwlkqe2g8osc" path="res://prototyping/materials/prototype/dark/dark.tres" id="1_2bupm"]
-[ext_resource type="PackedScene" uid="uid://f3mefhy61028" path="res://player/player_character_body.tscn" id="1_31bp1"]
+[ext_resource type="PackedScene" uid="uid://f3mefhy61028" path="res://entities/player/player_entity.tscn" id="1_31bp1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s7dc5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -59,4 +59,4 @@ use_collision = true
 
 [node name="Entities" type="Node" parent="."]
 
-[node name="PlayerCharacterBody" parent="Entities" instance=ExtResource("1_31bp1")]
+[node name="PlayerEntity" parent="Entities" instance=ExtResource("1_31bp1")]

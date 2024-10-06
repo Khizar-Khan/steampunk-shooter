@@ -5,7 +5,7 @@ using SteampunkShooter.components.weapons_component;
 
 namespace SteampunkShooter.player;
 
-public partial class PlayerCharacterBody : CharacterBody3D
+public partial class PlayerEntity : CharacterBody3D
 {
     // Constant Node Paths
     private const string OverheadShapeCastPath = "OverheadShapeCast";

@@ -1,6 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://pq0y3ha6pcao"]
+[gd_scene load_steps=23 format=3 uid="uid://f3mefhy61028"]
 
-[ext_resource type="Script" path="res://entities/player/PlayerCharacterBody.cs" id="1_451hh"]
+[ext_resource type="Script" path="res://entities/player/PlayerEntity.cs" id="1_xcd0n"]
 [ext_resource type="Script" path="res://components/player/PlayerInputComponent.cs" id="2_tjxwf"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/PlayerMovementComponent.cs" id="3_p2ove"]
 [ext_resource type="Script" path="res://components/extensions/state_machine/StateMachineExtension.cs" id="4_6vld6"]
@@ -28,8 +28,8 @@ height = 1.8
 [sub_resource type="SphereShape3D" id="SphereShape3D_vs4au"]
 radius = 0.25
 
-[node name="PlayerCharacterBody" type="CharacterBody3D"]
-script = ExtResource("1_451hh")
+[node name="PlayerEntity" type="CharacterBody3D"]
+script = ExtResource("1_xcd0n")
 
 [node name="CameraContainer" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)

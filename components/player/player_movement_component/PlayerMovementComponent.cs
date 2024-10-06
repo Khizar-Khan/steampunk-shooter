@@ -216,7 +216,7 @@ public partial class PlayerMovementComponent : Component
     // TODO: Maybe dont add coupling with player specifically?
     private float GetStandHeight()
     {
-        if (_characterBody is PlayerCharacterBody playerCharacterBody)
+        if (_characterBody is PlayerEntity playerCharacterBody)
             return playerCharacterBody.GetCollisionShapeStandHeight();
 
         throw new Exception("There is no stand height for this character body.");
