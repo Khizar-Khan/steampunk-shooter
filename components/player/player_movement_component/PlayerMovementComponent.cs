@@ -43,7 +43,7 @@ public partial class PlayerMovementComponent : Component
     [Export] private float _airDecelerationResponsiveness = 0.15f; // How much deceleration factor is used (E.G. 0.75 for 75% responsiveness)
 
     // Internal Attributes
-    private CharacterBody3D _characterBody;
+    private PlayerEntity _playerEntity;
     private Timer _jumpBufferTimer;
     private Timer _coyoteTimer;
 
@@ -69,8 +69,8 @@ public partial class PlayerMovementComponent : Component
 
     private void InitialiseCharacterBody()
     {
-        _characterBody = Owner as CharacterBody3D;
-        if (_characterBody == null)
+        _playerEntity = Owner as PlayerEntity;
+        if (_playerEntity == null)
             throw new NullReferenceException("MovementComponent's Owner is not of type CharacterBody3D or is null.");
     }
 
@@ -93,17 +93,17 @@ public partial class PlayerMovementComponent : Component
 
     public void ApplyGravity(double delta)
     {
-        _characterBody.Velocity += _characterBody.GetGravity() * (float)delta * (_characterBody.Velocity.Y >= 0.0f ? 1.0f : _fallGravityMultiplier);
-        if (_characterBody.Velocity.Y < _terminalVelocity)
-            _characterBody.Velocity = new Vector3(_characterBody.Velocity.X, _terminalVelocity, _characterBody.Velocity.Z);
+        _playerEntity.Velocity += _playerEntity.GetGravity() * (float)delta * (_playerEntity.Velocity.Y >= 0.0f ? 1.0f : _fallGravityMultiplier);
+        if (_playerEntity.Velocity.Y < _terminalVelocity)
+            _playerEntity.Velocity = new Vector3(_playerEntity.Velocity.X, _terminalVelocity, _playerEntity.Velocity.Z);
     }
 
     private void AdjustMovement(Vector3 targetVelocity, double delta, float responsiveness)
     {
-        _characterBody.Velocity = new Vector3(
-            MathUtil.ExponentialInterpolate(_characterBody.Velocity.X, targetVelocity.X, responsiveness, (float)delta),
-            _characterBody.Velocity.Y,
-            MathUtil.ExponentialInterpolate(_characterBody.Velocity.Z, targetVelocity.Z, responsiveness, (float)delta)
+        _playerEntity.Velocity = new Vector3(
+            MathUtil.ExponentialInterpolate(_playerEntity.Velocity.X, targetVelocity.X, responsiveness, (float)delta),
+            _playerEntity.Velocity.Y,
+            MathUtil.ExponentialInterpolate(_playerEntity.Velocity.Z, targetVelocity.Z, responsiveness, (float)delta)
         );
     }
 
@@ -129,10 +129,10 @@ public partial class PlayerMovementComponent : Component
 
     public void Jump()
     {
-        _characterBody.Velocity = new Vector3(
-            _characterBody.Velocity.X,
-            Mathf.Sqrt(_jumpHeight * 2.0f * Mathf.Abs(_characterBody.GetGravity().Y)),
-            _characterBody.Velocity.Z
+        _playerEntity.Velocity = new Vector3(
+            _playerEntity.Velocity.X,
+            Mathf.Sqrt(_jumpHeight * 2.0f * Mathf.Abs(_playerEntity.GetGravity().Y)),
+            _playerEntity.Velocity.Z
         );
 
         _hasJumped = true;
@@ -147,10 +147,10 @@ public partial class PlayerMovementComponent : Component
 
     public void MoveAndSlide()
     {
-        if (_characterBody.Velocity.Length() != 0 && _characterBody.Velocity.Length() < _velocityDropOffThreshold)
-            _characterBody.Velocity = Vector3.Zero;
+        if (_playerEntity.Velocity.Length() != 0 && _playerEntity.Velocity.Length() < _velocityDropOffThreshold)
+            _playerEntity.Velocity = Vector3.Zero;
 
-        _characterBody.MoveAndSlide();
+        _playerEntity.MoveAndSlide();
     }
 
     public bool CanJump()
@@ -185,12 +185,12 @@ public partial class PlayerMovementComponent : Component
 
     public bool IsFalling()
     {
-        return !IsOnFloor() && _characterBody.Velocity.Y < 0;
+        return !IsOnFloor() && _playerEntity.Velocity.Y < 0;
     }
 
     public bool IsOnFloor()
     {
-        return _characterBody.IsOnFloor();
+        return _playerEntity.IsOnFloor();
     }
 
     public bool IsIdle()
@@ -210,16 +210,12 @@ public partial class PlayerMovementComponent : Component
 
     public Vector3 GetMovementDirectionFromInput()
     {
-        return (_characterBody.Transform.Basis * new Vector3(_inputDirection.X, 0, _inputDirection.Y)).Normalized();
+        return (_playerEntity.Transform.Basis * new Vector3(_inputDirection.X, 0, _inputDirection.Y)).Normalized();
     }
-
-    // TODO: Maybe dont add coupling with player specifically?
+    
     private float GetStandHeight()
     {
-        if (_characterBody is PlayerEntity playerCharacterBody)
-            return playerCharacterBody.GetCollisionShapeStandHeight();
-
-        throw new Exception("There is no stand height for this character body.");
+        return _playerEntity.GetCollisionShapeStandHeight();
     }
 
     private void ResetJumpFlags()
