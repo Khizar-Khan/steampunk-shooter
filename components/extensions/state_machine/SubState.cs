@@ -3,35 +3,38 @@ using Godot;
 
 namespace SteampunkShooter.components.extensions.state_machine;
 
-public abstract partial class SubState : Node
+public abstract partial class SubState<T, TE> : Node where T : Component where TE : Enum
 {
-    protected StateMachineExtension StateMachine { get; private set; }
-    protected State ParentState { get; private set; }
+    protected BaseState<T, TE> ParentState { get; private set; }
 
-    public virtual void OnInitialise(StateMachineExtension stateMachineExtension, State parentState)
+    public virtual void OnInitialise(BaseState<T, TE> parentState)
     {
-        StateMachine = stateMachineExtension ?? throw new ArgumentNullException(nameof(stateMachineExtension));
         ParentState = parentState ?? throw new ArgumentNullException(nameof(parentState));
     }
 
-    public virtual void Enter()
+    internal virtual void Enter()
     {
         // No Default Implementation
     }
 
-    public virtual void Exit()
+    internal virtual void Exit()
     {
         // No Default Implementation
     }
 
-    public virtual void OnProcess(double delta)
+    internal virtual void OnProcess(double delta)
     {
         HandleSubStateTransitions();
     }
 
-    public virtual void OnPhysicsProcess(double delta)
+    internal virtual void OnPhysicsProcess(double delta)
     {
         // No Default Implementation
+    }
+    
+    protected void TransitionToSubState(TE stateEnum)
+    {
+        ParentState.TransitionToSubState(stateEnum.ToString());
     }
 
     protected abstract void HandleSubStateTransitions();

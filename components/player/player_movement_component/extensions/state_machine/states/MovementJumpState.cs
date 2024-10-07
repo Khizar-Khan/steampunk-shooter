@@ -13,6 +13,8 @@ public partial class MovementJumpState : BaseState<PlayerMovementComponent, Move
 
     internal override void OnPhysicsProcess(double delta)
     {
+        base.OnPhysicsProcess(delta);
+        
         Component.Crouch((float)delta, true);
         Component.ApplyGravity(delta);
 

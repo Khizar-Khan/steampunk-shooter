@@ -20,6 +20,8 @@ public partial class MovementFallingState : BaseState<PlayerMovementComponent, M
 
     internal override void OnPhysicsProcess(double delta)
     {
+        base.OnPhysicsProcess(delta);
+        
         Component.ApplyGravity(delta);
 
         Vector3 direction = Component.GetMovementDirectionFromInput();

@@ -167,6 +167,11 @@ public partial class PlayerMovementComponent : Component
     {
         return _isCrouchRequested && IsOnFloor();
     }
+    
+    public bool CanCrouchInAir()
+    {
+        return _isCrouchRequested;
+    }
 
     public bool CanStand()
     {

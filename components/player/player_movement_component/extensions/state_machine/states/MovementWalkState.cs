@@ -12,11 +12,11 @@ public partial class MovementWalkState : BaseState<PlayerMovementComponent, Move
 
     internal override void OnPhysicsProcess(double delta)
     {
-        Component.Crouch((float)delta, true);
+        base.OnPhysicsProcess(delta);
 
+        Component.Crouch((float)delta, true);
         if (!Component.IsOnFloor())
             Component.ApplyGravity(delta);
-
         Component.ApplyMovement(Component.GetMovementDirectionFromInput(), delta);
         Component.MoveAndSlide();
     }

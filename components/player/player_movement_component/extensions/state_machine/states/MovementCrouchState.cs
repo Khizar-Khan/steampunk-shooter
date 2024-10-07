@@ -13,6 +13,8 @@ public partial class MovementCrouchState : BaseState<PlayerMovementComponent, Mo
 
     internal override void OnPhysicsProcess(double delta)
     {
+        base.OnPhysicsProcess(delta);
+        
         Component.Crouch((float)delta);
 
         if (!Component.IsOnFloor())

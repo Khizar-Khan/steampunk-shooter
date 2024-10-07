@@ -6,6 +6,8 @@ public partial class MovementIdleState : BaseState<PlayerMovementComponent, Move
 {
     internal override void OnPhysicsProcess(double delta)
     {
+        base.OnPhysicsProcess(delta);
+        
         Component.Crouch((float)delta, true);
 
         if (!Component.IsOnFloor())
