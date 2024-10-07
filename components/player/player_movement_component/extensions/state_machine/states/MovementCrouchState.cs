@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementCrouchState : BaseState<PlayerMovementComponent, MovementStates>
+public partial class MovementCrouchState : BaseSimpleState<PlayerMovementComponent, MovementStates>
 {
     internal override void Enter()
     {

@@ -5,11 +5,11 @@ namespace SteampunkShooter.components.extensions.state_machine;
 
 public abstract partial class SubState<T, TE> : Node where T : Component where TE : Enum
 {
-    protected BaseState<T, TE> ParentState { get; private set; }
+    protected BaseHierarchicalState<T, TE> ParentState { get; private set; }
 
-    public virtual void OnInitialise(BaseState<T, TE> parentState)
+    public virtual void OnInitialise(BaseHierarchicalState<T, TE> parentHierarchicalState)
     {
-        ParentState = parentState ?? throw new ArgumentNullException(nameof(parentState));
+        ParentState = parentHierarchicalState ?? throw new ArgumentNullException(nameof(parentHierarchicalState));
     }
 
     internal virtual void Enter()

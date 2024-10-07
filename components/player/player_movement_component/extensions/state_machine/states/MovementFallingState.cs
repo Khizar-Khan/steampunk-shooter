@@ -3,7 +3,7 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementFallingState : BaseState<PlayerMovementComponent, MovementStates>
+public partial class MovementFallingState : BaseHierarchicalState<PlayerMovementComponent, MovementStates>
 {
     internal override void Enter()
     {

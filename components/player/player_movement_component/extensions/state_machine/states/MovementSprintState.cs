@@ -2,7 +2,7 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementSprintState : BaseState<PlayerMovementComponent, MovementStates>
+public partial class MovementSprintState : BaseSimpleState<PlayerMovementComponent, MovementStates>
 {
     internal override void Enter()
     {

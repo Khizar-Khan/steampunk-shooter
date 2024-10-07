@@ -5,7 +5,7 @@ using Godot.Collections;
 
 namespace SteampunkShooter.components.extensions.state_machine;
 
-public abstract partial class BaseState<T, TE> : State where T : Component where TE : Enum
+public abstract partial class BaseHierarchicalState<T, TE> : State where T : Component where TE : Enum
 {
     [Export] private NodePath _initialSubStatePath;
 
@@ -80,12 +80,7 @@ public abstract partial class BaseState<T, TE> : State where T : Component where
 
     private void SetInitialSubState()
     {
-        if (_subStates.Count == 0)
-            return;
-
-        GD.Print($"{Name}: Initial Sub State Path: {_initialSubStatePath}");
         _currentSubState = GetNode<SubState<T, TE>>(_initialSubStatePath);
-
         if (_currentSubState == null)
             throw new NullReferenceException("Initial Sub State Not Found");
 

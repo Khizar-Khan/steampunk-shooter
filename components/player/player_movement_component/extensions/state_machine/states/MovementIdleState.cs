@@ -2,7 +2,7 @@ using SteampunkShooter.components.extensions.state_machine;
 
 namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-public partial class MovementIdleState : BaseState<PlayerMovementComponent, MovementStates>
+public partial class MovementIdleState : BaseSimpleState<PlayerMovementComponent, MovementStates>
 {
     internal override void OnPhysicsProcess(double delta)
     {
