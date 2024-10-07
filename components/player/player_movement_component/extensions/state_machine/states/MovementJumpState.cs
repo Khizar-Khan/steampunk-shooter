@@ -13,9 +13,6 @@ public partial class MovementJumpState : BaseHierarchicalState<PlayerMovementCom
 
     internal override void OnPhysicsProcess(double delta)
     {
-        base.OnPhysicsProcess(delta);
-        
-        Component.Crouch((float)delta, true);
         Component.ApplyGravity(delta);
 
         Vector3 direction = Component.GetMovementDirectionFromInput();
@@ -24,6 +21,8 @@ public partial class MovementJumpState : BaseHierarchicalState<PlayerMovementCom
         else
             Component.RemoveAirMovement(delta);
         Component.MoveAndSlide();
+        
+        base.OnPhysicsProcess(delta);
     }
 
     protected override void HandleStateTransitions()

@@ -6,8 +6,8 @@ public partial class MovementIdleSubState : SubState<PlayerMovementComponent, Mo
 {
     internal override void OnProcess(double delta)
     {
+        ParentState.Component.Crouch((float)delta, true);
         base.OnProcess(delta);
-        HandleSubStateTransitions();
     }
 
     protected override void HandleSubStateTransitions()

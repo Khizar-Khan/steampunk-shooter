@@ -9,7 +9,6 @@ public partial class WeaponIdleState : BaseSimpleState<PlayerWeaponsComponent, W
     internal override void Enter()
     {
         base.Enter();
-        GD.Print("Weapon idle");
     }
 
     protected override void HandleStateTransitions()

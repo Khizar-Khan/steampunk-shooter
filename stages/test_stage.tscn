@@ -41,6 +41,24 @@ material_override = ExtResource("1_2bupm")
 use_collision = true
 size = Vector3(1, 2, 1)
 
+[node name="CSGBox3D5" type="CSGBox3D" parent="Structures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, -7)
+material_override = ExtResource("1_2bupm")
+use_collision = true
+size = Vector3(1, 2, 1)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Structures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3, -7)
+material_override = ExtResource("1_2bupm")
+use_collision = true
+size = Vector3(1, 2, 1)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Structures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 4, -7)
+material_override = ExtResource("1_2bupm")
+use_collision = true
+size = Vector3(1, 2, 1)
+
 [node name="CSGBox3D2" type="CSGBox3D" parent="Structures"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, -7)
 material_override = ExtResource("1_2bupm")

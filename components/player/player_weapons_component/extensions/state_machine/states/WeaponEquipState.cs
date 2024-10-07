@@ -8,8 +8,6 @@ public partial class WeaponEquipState : BaseSimpleState<PlayerWeaponsComponent, 
     internal override void Enter()
     {
         base.Enter();
-        GD.Print("Weapon equipped");
-        
         if (Component.IsSwitchToNextWeaponRequested)
             Component.EquipNextWeapon();
         else if (Component.IsSwitchToPreviousWeaponRequested)
