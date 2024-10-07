@@ -1,7 +1,7 @@
-﻿using Godot;
+﻿using SteampunkShooter.components.extensions.state_machine;
 using SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-namespace SteampunkShooter.components.extensions.state_machine.sub_states;
+namespace SteampunkShooter.components.player.player_movement_component.extensions.state_machine.sub_states;
 
 public partial class MovementCrouchSubState : SubState<PlayerMovementComponent, MovementStates>
 {

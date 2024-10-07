@@ -1,9 +1,9 @@
 using System;
 using Godot;
-using SteampunkShooter.player;
+using SteampunkShooter.entities.player;
 using SteampunkShooter.utility;
 
-namespace SteampunkShooter.components;
+namespace SteampunkShooter.components.player.player_movement_component;
 
 public partial class PlayerMovementComponent : Component
 {

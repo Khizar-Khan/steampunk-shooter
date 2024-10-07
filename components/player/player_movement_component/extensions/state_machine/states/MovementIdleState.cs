@@ -1,13 +1,12 @@
 using SteampunkShooter.components.extensions.state_machine;
+using SteampunkShooter.components.movement_component.extensions.state_machine.states;
 
-namespace SteampunkShooter.components.movement_component.extensions.state_machine.states;
+namespace SteampunkShooter.components.player.player_movement_component.extensions.state_machine.states;
 
 public partial class MovementIdleState : BaseSimpleState<PlayerMovementComponent, MovementStates>
 {
     internal override void OnPhysicsProcess(double delta)
     {
-        base.OnPhysicsProcess(delta);
-        
         Component.Crouch((float)delta, true);
 
         if (!Component.IsOnFloor())

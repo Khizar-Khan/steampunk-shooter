@@ -1,9 +1,10 @@
 using System;
 using Godot;
 using SteampunkShooter.components;
+using SteampunkShooter.components.player.player_movement_component;
 using SteampunkShooter.components.weapons_component;
 
-namespace SteampunkShooter.player;
+namespace SteampunkShooter.entities.player;
 
 public partial class PlayerEntity : CharacterBody3D
 {
