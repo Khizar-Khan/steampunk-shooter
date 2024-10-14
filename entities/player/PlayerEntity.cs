@@ -11,7 +11,6 @@ public partial class PlayerEntity : CharacterBody3D
     // Constant Node Paths
     private const string OverheadShapeCastPath = "OverheadShapeCast";
     private const string CollisionShapePath = "CollisionShape";
-    private const string CameraContainerPath = "CameraContainer";
     private const string PlayerInputComponentPath = "PlayerInputComponent";
     private const string PlayerMovementComponentPath = "PlayerMovementComponent";
     private const string PlayerCameraComponentPath = "PlayerCameraComponent";
@@ -20,7 +19,6 @@ public partial class PlayerEntity : CharacterBody3D
     // References
     private ShapeCast3D _overheadShapeCast;
     private CollisionShape3D _collisionShape;
-    private Node3D _cameraContainer;
 
     // Components
     private PlayerInputComponent _playerInputComponent;
@@ -29,8 +27,6 @@ public partial class PlayerEntity : CharacterBody3D
     private PlayerWeaponsComponent _playerWeaponsComponent;
 
     // Cached Values
-    private Transform3D _originalCameraContainerTransform;
-    private float _cameraContainerPositionOffset;
     private float _collisionShapeStandHeight;
     private bool _isObstructionAbove;
 
@@ -53,7 +49,6 @@ public partial class PlayerEntity : CharacterBody3D
     {
         _overheadShapeCast = GetNode<ShapeCast3D>(OverheadShapeCastPath) ?? throw new NullReferenceException("OverheadShapeCast not found.");
         _collisionShape = GetNode<CollisionShape3D>(CollisionShapePath) ?? throw new NullReferenceException("CollisionShape not found.");
-        _cameraContainer = GetNode<Node3D>(CameraContainerPath) ?? throw new NullReferenceException("CameraContainer not found.");
     }
 
     private void InitialiseComponents()
@@ -67,16 +62,9 @@ public partial class PlayerEntity : CharacterBody3D
     private void CacheValues()
     {
         if (_collisionShape.Shape is CapsuleShape3D capsuleShape)
-        {
             _collisionShapeStandHeight = capsuleShape.Height;
-            _cameraContainerPositionOffset = _collisionShapeStandHeight - _cameraContainer.Position.Y;
-        }
         else
-        {
             throw new InvalidCastException("CollisionShape is not a CapsuleShape3D.");
-        }
-        
-        _originalCameraContainerTransform = _cameraContainer.Transform;
     }
 
     private void ConnectSignals()
@@ -110,12 +98,12 @@ public partial class PlayerEntity : CharacterBody3D
             nameof(SignalBus.Instance.PlayerObstructionAbove),
             new Callable(_movementPlayerMovementComponent, nameof(PlayerMovementComponent.OnObstructionAbove))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerMouseMoved),
             new Callable(_playerCameraComponent, nameof(PlayerCameraComponent.OnMouseMotion))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerMovementInput),
             new Callable(_playerCameraComponent, nameof(PlayerCameraComponent.OnMovementInput))
@@ -125,22 +113,22 @@ public partial class PlayerEntity : CharacterBody3D
             nameof(SignalBus.Instance.PlayerNextWeaponRequested),
             new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnNextWeaponRequest))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerPreviousWeaponRequested),
             new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnPreviousWeaponRequest))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerWeaponAttackRequested),
             new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnWeaponAttackRequest))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerWeaponReloadRequested),
             new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnWeaponReloadRequest))
         );
-        
+
         SignalBus.Instance.Connect(
             nameof(SignalBus.Instance.PlayerMouseMoved),
             new Callable(_playerWeaponsComponent, nameof(PlayerWeaponsComponent.OnMouseMotion))
@@ -169,21 +157,15 @@ public partial class PlayerEntity : CharacterBody3D
             // TODO: Thresholds will affect different aspects differently. For example the camera position will lerp at a different rate than the capsule height.
             bool heightAdjusted = AdjustCapsuleHeight(capsuleShape, currentHeight, targetHeight, lerpSpeed, delta, threshold);
             bool collisionPositionAdjusted = AdjustCollisionShapePosition(targetHeight, lerpSpeed, delta, threshold);
-            bool cameraPositionAdjusted = AdjustCameraContainerPosition(targetHeight, lerpSpeed, delta, threshold);
 
             // If all adjustments have reached the target (within the threshold), snap to the exact target values
-            if (heightAdjusted && collisionPositionAdjusted && cameraPositionAdjusted)
+            if (heightAdjusted && collisionPositionAdjusted)
             {
                 capsuleShape.Height = targetHeight;
                 _collisionShape.Position = new Vector3(
                     _collisionShape.Position.X,
                     targetHeight * 0.5f,
                     _collisionShape.Position.Z
-                );
-                _cameraContainer.Position = new Vector3(
-                    _cameraContainer.Position.X,
-                    targetHeight - _cameraContainerPositionOffset,
-                    _cameraContainer.Position.Z
                 );
             }
         }
@@ -213,26 +195,6 @@ public partial class PlayerEntity : CharacterBody3D
         return Mathf.Abs(newCollisionY - targetCollisionY) < threshold;
     }
 
-    private bool AdjustCameraContainerPosition(float targetHeight, float lerpSpeed, float delta, float threshold)
-    {
-        float currentCameraY = _cameraContainer.Position.Y;
-        float targetCameraY = targetHeight - _cameraContainerPositionOffset;
-        float newCameraY = Mathf.Lerp(currentCameraY, targetCameraY, lerpSpeed * delta);
-        _cameraContainer.Position = new Vector3(
-            _cameraContainer.Position.X,
-            newCameraY,
-            _cameraContainer.Position.Z
-        );
-
-        // Check if the camera position is within the threshold
-        return Mathf.Abs(newCameraY - targetCameraY) < threshold;
-    }
-
-    public Transform3D GetOriginalCameraTransform()
-    {
-        return _originalCameraContainerTransform;
-    }
-    
     public float GetCollisionShapeStandHeight()
     {
         return _collisionShapeStandHeight;
