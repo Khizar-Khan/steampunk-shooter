@@ -4,7 +4,7 @@ using SteampunkShooter.components.movement_component.extensions.state_machine.st
 
 namespace SteampunkShooter.components.player.player_movement_component.extensions.state_machine.states;
 
-public partial class MovementFallingState : BaseHierarchicalState<PlayerMovementComponent, MovementStates>
+public partial class MovementFallingState : BaseSimpleState<PlayerMovementComponent, MovementStates>
 {
     internal override void Enter()
     {
@@ -23,6 +23,7 @@ public partial class MovementFallingState : BaseHierarchicalState<PlayerMovement
     {
         Component.ApplyGravity(delta);
 
+        Component.Crouch((float)delta, true);
         Vector3 direction = Component.GetMovementDirectionFromInput();
         if (direction != Vector3.Zero)
             Component.ApplyAirMovement(direction, delta);

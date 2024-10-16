@@ -146,7 +146,6 @@ public partial class PlayerEntity : CharacterBody3D
 
     public void AdjustHeight(float targetHeight, float lerpSpeed, float threshold, float delta)
     {
-        // TODO: Capsule size gets bigger when crouching and directly falling. Check via: GD.Print((_collisionShape.Shape as CapsuleShape3D).Height);
         if (_collisionShape.Shape is CapsuleShape3D capsuleShape)
         {
             float currentHeight = capsuleShape.Height;
@@ -154,17 +153,17 @@ public partial class PlayerEntity : CharacterBody3D
             if (targetHeight > currentHeight && _isObstructionAbove)
                 return;
 
-            // TODO: Thresholds will affect different aspects differently. For example the camera position will lerp at a different rate than the capsule height.
+            // Adjust capsule height and collision position
             bool heightAdjusted = AdjustCapsuleHeight(capsuleShape, currentHeight, targetHeight, lerpSpeed, delta, threshold);
-            bool collisionPositionAdjusted = AdjustCollisionShapePosition(targetHeight, lerpSpeed, delta, threshold);
+            bool collisionPositionAdjusted = AdjustCollisionShapePosition(currentHeight, targetHeight, lerpSpeed, delta, threshold);
 
-            // If all adjustments have reached the target (within the threshold), snap to the exact target values
+            // Snap to the exact target values if both adjustments are done
             if (heightAdjusted && collisionPositionAdjusted)
             {
                 capsuleShape.Height = targetHeight;
                 _collisionShape.Position = new Vector3(
                     _collisionShape.Position.X,
-                    targetHeight * 0.5f,
+                    _collisionShape.Position.Y - (currentHeight - targetHeight) / 2, // Shrink/expand from the center
                     _collisionShape.Position.Z
                 );
             }
@@ -180,11 +179,18 @@ public partial class PlayerEntity : CharacterBody3D
         return Mathf.Abs(newHeight - targetHeight) < threshold;
     }
 
-    private bool AdjustCollisionShapePosition(float targetHeight, float lerpSpeed, float delta, float threshold)
+    private bool AdjustCollisionShapePosition(float currentHeight, float targetHeight, float lerpSpeed, float delta, float threshold)
     {
         float currentCollisionY = _collisionShape.Position.Y;
-        float targetCollisionY = targetHeight * 0.5f;
+
+        // Calculate how much the capsule should shift vertically, from the center
+        float heightDifference = (currentHeight - targetHeight) / 2;
+        float targetCollisionY = currentCollisionY - heightDifference; // Adjust relative to center
+
+        // Smoothly interpolate the Y position
         float newCollisionY = Mathf.Lerp(currentCollisionY, targetCollisionY, lerpSpeed * delta);
+
+        // Update the collision shape's position while keeping X and Z unchanged
         _collisionShape.Position = new Vector3(
             _collisionShape.Position.X,
             newCollisionY,

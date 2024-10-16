@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://f3mefhy61028"]
+[gd_scene load_steps=24 format=3 uid="uid://f3mefhy61028"]
 
 [ext_resource type="Script" path="res://entities/player/PlayerEntity.cs" id="1_xcd0n"]
 [ext_resource type="Script" path="res://scripts/cameras/CameraControl.cs" id="2_cax7a"]
@@ -8,9 +8,7 @@
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementIdleState.cs" id="5_l2e5h"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementWalkState.cs" id="6_pg2w4"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementJumpState.cs" id="7_6j1fy"]
-[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/sub_states/MovementCrouchSubState.cs" id="8_2meti"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementSprintState.cs" id="8_6txf6"]
-[ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/sub_states/MovementIdleSubState.cs" id="8_6yvtx"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementFallingState.cs" id="9_nx2hw"]
 [ext_resource type="Script" path="res://components/player/player_movement_component/extensions/state_machine/states/MovementCrouchState.cs" id="10_n5ro0"]
 [ext_resource type="Script" path="res://components/player/PlayerCameraComponent.cs" id="11_uc0hs"]
@@ -79,26 +77,12 @@ script = ExtResource("6_pg2w4")
 
 [node name="JumpState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
 script = ExtResource("7_6j1fy")
-_initialSubStatePath = NodePath("IdleState")
-
-[node name="IdleState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension/JumpState"]
-script = ExtResource("8_6yvtx")
-
-[node name="CrouchState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension/JumpState"]
-script = ExtResource("8_2meti")
 
 [node name="SprintState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
 script = ExtResource("8_6txf6")
 
 [node name="FallingState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
 script = ExtResource("9_nx2hw")
-_initialSubStatePath = NodePath("IdleState")
-
-[node name="IdleState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension/FallingState"]
-script = ExtResource("8_6yvtx")
-
-[node name="CrouchState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension/FallingState"]
-script = ExtResource("8_2meti")
 
 [node name="CrouchState" type="Node" parent="PlayerMovementComponent/MovementStateMachineExtension"]
 script = ExtResource("10_n5ro0")
